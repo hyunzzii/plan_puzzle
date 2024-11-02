@@ -1,0 +1,19 @@
+spring:
+  config:
+    activate:
+      on-profile: test
+
+jwt:
+  access-secret: asdasdsadwqewqeqwrwqfefafafasdsda
+  refresh-secret: ejkjsshhmzsdasdsfewyfqebwufnadsaojls
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+jwt:
+  access-secret: ${JWT_ACCESS_SECRET}
+  refresh-secret: ${JWT_REFRESH_SECRET}

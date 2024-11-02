@@ -2,6 +2,8 @@ package com.sloth.plan_puzzle.common.security.jwt;
 
 import static com.sloth.plan_puzzle.common.security.jwt.JwtUtil.REFRESH_DURATION;
 
+import com.sloth.plan_puzzle.common.exception.CustomException;
+import com.sloth.plan_puzzle.common.exception.CustomExceptionInfo;
 import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -20,6 +22,20 @@ public class RedisUtil {
 
     public String getValues(final String key) {
         ValueOperations<String, String> values = redisTemplate.opsForValue();
-        return values.get(key);
+        String value = values.get(key);
+        if (value == null) {
+            throw new CustomException(CustomExceptionInfo.INVALID_REFRESH_TOKEN);
+        }
+        return value;
+    }
+
+    public void validateRefreshToken(final String key, final String refreshToken){
+        if(!getValues(key).equals(refreshToken)){
+            throw new CustomException(CustomExceptionInfo.INVALID_REFRESH_TOKEN);
+        }
+    }
+
+    public void deleteByKey(final String key) {
+        redisTemplate.delete(key);
     }
 }

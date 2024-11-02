@@ -12,10 +12,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-//@PropertySource("classpath:application.yml")
 public class JwtUtil {
     public static final String BEARER_PREFIX = "Bearer ";
     public static final String AUTHORIZATION_HEADER = "Authorization";
+    public static final String REFRESH_TOKEN_HEADER = "X-Refresh-Token";
 
     public static final String CLAIM_ROLES = "roles";
     public static final String CLAIM_USER_ID = "userId";
@@ -62,8 +62,9 @@ public class JwtUtil {
                 .getPayload();
     }
 
-    public Date getExpiration(final JwtType jwtType, final String token){
-        return parseClaimsFromToken(jwtType, token).getExpiration();
+    public String getLoginIdFromToken(final JwtType jwtType, final String token) {
+        return (String) parseClaimsFromToken(jwtType, token)
+                .get(CLAIM_USER_ID);
     }
 }
 
