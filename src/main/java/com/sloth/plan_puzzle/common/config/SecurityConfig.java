@@ -47,7 +47,7 @@ public class SecurityConfig {
         );
         http.authorizeHttpRequests(authMangerRequestMatcher -> authMangerRequestMatcher
                 .requestMatchers("/users/**").permitAll()
-                .requestMatchers("/auth/login").permitAll()
+                .requestMatchers("/auth/login","/auth/reissue").permitAll()
                 .anyRequest().authenticated());
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

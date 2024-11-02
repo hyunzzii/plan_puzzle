@@ -1,8 +1,7 @@
 package com.sloth.plan_puzzle.common.security.jwt;
 
-import static com.sloth.plan_puzzle.common.exception.CustomExceptionInfo.EXPIRED_TOKEN;
-import static com.sloth.plan_puzzle.common.exception.CustomExceptionInfo.INVALID_TOKEN;
-import static com.sloth.plan_puzzle.common.exception.CustomExceptionInfo.LOGOUT_TOKEN;
+import static com.sloth.plan_puzzle.common.exception.CustomExceptionInfo.EXPIRED_ACCESS_TOKEN;
+import static com.sloth.plan_puzzle.common.exception.CustomExceptionInfo.INVALID_ACCESS_TOKEN;
 import static com.sloth.plan_puzzle.common.security.jwt.JwtUtil.AUTHORIZATION_HEADER;
 import static com.sloth.plan_puzzle.common.security.jwt.JwtUtil.BEARER_PREFIX;
 
@@ -16,6 +15,8 @@ import java.io.IOException;
 import javax.security.sasl.AuthenticationException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -26,7 +27,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
-    private final RedisUtil redisUtil;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
@@ -44,19 +44,16 @@ public class JwtFilter extends OncePerRequestFilter {
         try {
             claims = jwtUtil.parseClaimsFromToken(JwtType.ACCESS, accessToken);
         } catch (ExpiredJwtException expiredJwtException) {
-            request.setAttribute("exception", EXPIRED_TOKEN);
-            throw new AuthenticationException(EXPIRED_TOKEN.getMessage());
+            request.setAttribute("exception", EXPIRED_ACCESS_TOKEN);
+            throw new AuthenticationException(EXPIRED_ACCESS_TOKEN.getMessage());
         } catch (Exception exception) {
-            request.setAttribute("exception", INVALID_TOKEN);
-            throw new AuthenticationException(INVALID_TOKEN.getMessage());
+            request.setAttribute("exception", INVALID_ACCESS_TOKEN);
+            throw new AuthenticationException(INVALID_ACCESS_TOKEN.getMessage());
         }
-
-        if (redisUtil.getValues(accessToken) != null && redisUtil.getValues(accessToken).equals("logout")) {
-            request.setAttribute("exception", LOGOUT_TOKEN);
-            throw new AuthenticationException(LOGOUT_TOKEN.getMessage());
-        }
-
-        SecurityContextHolder.getContext().setAuthentication(new JwtAuthentication(claims, accessToken));
+        CustomUserDetails userDetails = new CustomUserDetails(claims);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
+                userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
         filterChain.doFilter(request, response);
     }
 
