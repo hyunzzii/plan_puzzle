@@ -4,6 +4,7 @@ import static com.sloth.plan_puzzle.common.exception.CustomExceptionInfo.INVALID
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.sloth.plan_puzzle.common.exception.CustomException;
 import com.sloth.plan_puzzle.common.security.jwt.RedisUtil;
 import com.sloth.plan_puzzle.domain.user.AgeGroup;
 import com.sloth.plan_puzzle.domain.user.Gender;
@@ -37,7 +38,7 @@ class AuthServiceTest {
     private PasswordEncoder passwordEncoder;
 
     @BeforeEach
-    void setUpUser(){
+    void setUpUser() {
         UserJpaEntity userJpaEntity = UserJpaEntity.builder()
                 .loginId("loginId")
                 .loginPw(passwordEncoder.encode("password"))
@@ -52,26 +53,28 @@ class AuthServiceTest {
 
     @DisplayName("password 검증에 성공했습니다.")
     @Test
-    void validateUserByPassword(){
+    void validateUserByPassword() {
         //given
-        LoginRequest loginRequest = LoginRequest.builder()
-                .loginId("loginId")
-                .loginPw("password")
-                .build();
+        LoginRequest loginRequest = getBuild("password");
         //when, then
-        assertThatNoException().isThrownBy(()-> authService.validateUserByPassword(loginRequest));
+        assertThatNoException().isThrownBy(() -> authService.validateUserByPassword(loginRequest));
     }
 
     @DisplayName("password 검증에 실패하면 에러가 발생합니다.")
     @Test
-    void validateUserByPasswordFail(){
+    void validateUserByPasswordFail() {
         //given
-        LoginRequest loginRequest = LoginRequest.builder()
-                .loginId("loginId")
-                .loginPw("password_fail")
-                .build();
+        LoginRequest loginRequest = getBuild("fail_password");
         //when, then
-        assertThatThrownBy(()-> authService.validateUserByPassword(loginRequest))
+        assertThatThrownBy(() -> authService.validateUserByPassword(loginRequest))
+                .isInstanceOf(CustomException.class)
                 .hasMessage(INVALID_PASSWORD.getMessage());
+    }
+
+    private LoginRequest getBuild(final String loginPw) {
+        return LoginRequest.builder()
+                .loginId("loginId")
+                .loginPw(loginPw)
+                .build();
     }
 }

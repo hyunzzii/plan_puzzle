@@ -34,7 +34,7 @@ public class AuthService {
         return createJwtTokens(user);
     }
 
-    public JwtResponse createJwtTokens(final User user) {
+    private JwtResponse createJwtTokens(final User user) {
         String accessToken = jwtUtil.createAccessToken(user.loginId(), Collections.singletonList(user.role()));
         String refreshToken = jwtUtil.createRefreshToken(user.loginId());
         redisUtil.save(user.loginId(), refreshToken);
