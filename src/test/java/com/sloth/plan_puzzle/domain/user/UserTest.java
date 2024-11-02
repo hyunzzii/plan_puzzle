@@ -16,24 +16,32 @@ class UserTest {
 
     @DisplayName("비밀번호가 일치하면 메서드를 통과합니다.")
     @Test
-    void validatePasswordTest(){
-        User user = User.builder()
-                .loginId("loginId")
-                .loginPw(passwordEncoder.encode("password"))
-                .build();
+    void validatePasswordTest() {
+        //given
+        User user = createUser();
+
+        //when, then
         assertThatNoException().isThrownBy(() ->
                 user.validatePassword(passwordEncoder, "password"));
     }
 
     @DisplayName("비밀번호가 일치하지 않으면 에러를 반환합니다.")
     @Test
-    void validatePasswordFailTest(){
-        User user = User.builder()
+    void validatePasswordFailTest() {
+        //given
+        User user = createUser();
+
+        //when, then
+        assertThatThrownBy(() ->
+                user.validatePassword(passwordEncoder, "password_fail"))
+                .isInstanceOf(CustomException.class)
+                .hasMessage(INVALID_PASSWORD.getMessage());
+    }
+
+    private User createUser() {
+        return User.builder()
                 .loginId("loginId")
                 .loginPw(passwordEncoder.encode("password"))
                 .build();
-        assertThatThrownBy(() ->
-                user.validatePassword(passwordEncoder, "password_fail"))
-                .hasMessage(INVALID_PASSWORD.getMessage());
     }
 }
