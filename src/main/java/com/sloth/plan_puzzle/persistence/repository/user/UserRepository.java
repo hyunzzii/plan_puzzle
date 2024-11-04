@@ -11,8 +11,13 @@ public interface UserRepository extends JpaRepository<UserJpaEntity, Long> {
 
     boolean existsByLoginId(String loginId);
 
-    default UserJpaEntity getByLoginId(final String loginId) {
+    default UserJpaEntity getUserByLoginId(final String loginId) {
         return findByLoginId(loginId)
+                .orElseThrow(() -> new CustomException(CustomExceptionInfo.NOT_FOUND_USER));
+    }
+
+    default UserJpaEntity getUserById(final Long id){
+        return findById(id)
                 .orElseThrow(() -> new CustomException(CustomExceptionInfo.NOT_FOUND_USER));
     }
 }

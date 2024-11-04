@@ -19,17 +19,13 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/validation/login-id")
-    public void validateLoginId(@RequestParam String loginId){
+    public void validateLoginId(@RequestParam String loginId) {
         userService.isDuplicateLoginId(loginId);
     }
 
-//    @GetMapping("/validation/nickname")
-//    public void validateNickname(@RequestParam String nickname){
-//        userService.isDuplicateNickname(nickname);
-//    }
 
     @PostMapping
-    public void userSignUp(@RequestBody @Valid UserSignupRequest request){
+    public void userSignUp(@RequestBody @Valid UserSignupRequest request) {
         userService.createUser(request);
     }
 }
