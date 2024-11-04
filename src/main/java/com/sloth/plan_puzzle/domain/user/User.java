@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Builder
 public record User(
+        Long id,
         String loginId,
         String loginPw,
         String name,
@@ -17,19 +18,20 @@ public record User(
         UserRole role
 
 ) {
-    public static User toDomain(final UserJpaEntity userJpaEntity){
+    public static User fromEntity(final UserJpaEntity userEntity){
         return User.builder()
-                .loginId(userJpaEntity.getLoginId())
-                .loginPw(userJpaEntity.getLoginPw())
-                .name(userJpaEntity.getName())
-                .email(userJpaEntity.getEmail())
-                .ageGroup(userJpaEntity.getAgeGroup())
-                .gender(userJpaEntity.getGender())
-                .role(userJpaEntity.getRole())
+                .id(userEntity.getId())
+                .loginId(userEntity.getLoginId())
+                .loginPw(userEntity.getLoginPw())
+                .name(userEntity.getName())
+                .email(userEntity.getEmail())
+                .ageGroup(userEntity.getAgeGroup())
+                .gender(userEntity.getGender())
+                .role(userEntity.getRole())
                 .build();
     }
 
-    public UserJpaEntity createSignupUserEntity(final PasswordEncoder passwordEncoder) {
+    public UserJpaEntity createEntity(final PasswordEncoder passwordEncoder) {
         return UserJpaEntity.builder()
                 .loginId(loginId)
                 .loginPw(passwordEncoder.encode(loginPw))

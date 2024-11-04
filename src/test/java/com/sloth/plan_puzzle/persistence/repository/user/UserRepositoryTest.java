@@ -1,6 +1,7 @@
 package com.sloth.plan_puzzle.persistence.repository.user;
 
 import static com.sloth.plan_puzzle.common.exception.CustomExceptionInfo.NOT_FOUND_USER;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -29,22 +30,26 @@ class UserRepositoryTest {
     @DisplayName("유저를 loginId로 찾을 수 있다.")
     void getByLoginIdTest() {
         //given
-        UserJpaEntity userJpaEntity = createUser();
+        UserJpaEntity userEntity = createUser();
         //when
-        userRepository.save(userJpaEntity);
+        userRepository.save(userEntity);
         //then
-        assertThatNoException().isThrownBy(() -> userRepository.getByLoginId("loginId"));
+        assertThat(userRepository.getUserByLoginId("loginId")).isEqualTo(userEntity);
+
+//        assertThat(userRepository.getUserByLoginId("loginId"))
+//                .extracting("name",  "loginId")
+//                .containsExactly("test", "loginId");
     }
 
     @Test
     @DisplayName("유저를 잘못된 loginId로 찾으면 에러가 발생한다.")
     void getByLoginIdFailTest() {
         //given
-        UserJpaEntity userJpaEntity = createUser();
+        UserJpaEntity userEntity = createUser();
         //when
-        userRepository.save(userJpaEntity);
+        userRepository.save(userEntity);
         //then
-        assertThatThrownBy(() -> userRepository.getByLoginId("loginId_fail"))
+        assertThatThrownBy(() -> userRepository.getUserByLoginId("loginId_fail"))
                 .isInstanceOf(CustomException.class)
                 .hasMessage(NOT_FOUND_USER.getMessage());
     }
