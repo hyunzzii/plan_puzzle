@@ -53,8 +53,7 @@ public class UserScheduleJpaEntity {
 
     @Builder
     public UserScheduleJpaEntity(final LocalDateTime startDateTime, final LocalDateTime endDateTime, final String title,
-                                 final String content, final UserScheduleState state,
-                                 final UserJpaEntity user) {
+                                 final String content, final UserScheduleState state, final UserJpaEntity user) {
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
         this.title = title;
