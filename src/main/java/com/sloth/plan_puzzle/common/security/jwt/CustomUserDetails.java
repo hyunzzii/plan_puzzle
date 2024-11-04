@@ -4,15 +4,19 @@ import io.jsonwebtoken.Claims;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public class CustomUserDetails implements UserDetails {
     private final String loginId;
+    @Getter
+    private final Long userId;
     private final Collection<? extends GrantedAuthority> roles;
 
-    public CustomUserDetails(Claims claims){
-        this.loginId = (String) claims.get(JwtUtil.CLAIM_USER_ID);
+    public CustomUserDetails(Claims claims) {
+        this.loginId = (String) claims.get(JwtUtil.CLAIM_LOGIN_ID);
+        this.userId = Long.valueOf((Integer) claims.get(JwtUtil.CLAIM_USER_ID));
         this.roles = createGrantedAuthorities((List<String>) claims.get(JwtUtil.CLAIM_ROLES));
     }
 

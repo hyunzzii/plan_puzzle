@@ -24,7 +24,7 @@ public class AuthService {
     private final RedisUtil redisUtil;
 
     public User validateUserByPassword(final LoginRequest userLoginRequest) {
-        User user = User.toDomain(userRepository.getByLoginId(userLoginRequest.loginId()));
+        User user = User.fromEntity(userRepository.getUserByLoginId(userLoginRequest.loginId()));
         user.validatePassword(passwordEncoder, userLoginRequest.loginPw());
         return user;
     }
@@ -34,28 +34,30 @@ public class AuthService {
         return createJwtTokens(user);
     }
 
+    //refresh
+    public JwtResponse generateTokenForReissue(final String refreshToken) {
+        Long userId = jwtUtil.getUserIdFromToken(JwtType.REFRESH, refreshToken);
+        User user = User.fromEntity(userRepository.getUserById(userId));    //해당 user 존재 검증
+
+        redisUtil.validateRefreshToken(user.loginId(), refreshToken);
+        deleteExistingRefreshToken(user.loginId());
+        return createJwtTokens(user);
+    }
+
+    public void deleteExistingRefreshToken(final String loginId) {
+        redisUtil.deleteByKey(loginId);
+    }
+
+    //private
     private JwtResponse createJwtTokens(final User user) {
-        String accessToken = jwtUtil.createAccessToken(user.loginId(), Collections.singletonList(user.role()));
-        String refreshToken = jwtUtil.createRefreshToken(user.loginId());
+        String accessToken = jwtUtil.createAccessToken(user.id(), user.loginId(),
+                Collections.singletonList(user.role()));
+        String refreshToken = jwtUtil.createRefreshToken(user.id());
         redisUtil.save(user.loginId(), refreshToken);
         return JwtResponse.builder()
                 .grantType(JwtUtil.BEARER_PREFIX)
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
-    }
-
-    //refresh
-    public JwtResponse generateTokenForReissue(final String refreshToken) {
-        String loginId = jwtUtil.getLoginIdFromToken(JwtType.REFRESH, refreshToken);
-        redisUtil.validateRefreshToken(loginId, refreshToken);
-        deleteExistingRefreshToken(loginId);
-
-        User user = User.toDomain(userRepository.getByLoginId(loginId));    //해당 user 존재 검증
-        return createJwtTokens(user);
-    }
-
-    public void deleteExistingRefreshToken(final String loginId) {
-        redisUtil.deleteByKey(loginId);
     }
 }
