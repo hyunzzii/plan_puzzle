@@ -1,6 +1,7 @@
 package com.sloth.plan_puzzle.api.controller.auth;
 
 import com.sloth.plan_puzzle.api.service.auth.AuthService;
+import com.sloth.plan_puzzle.common.security.jwt.CustomUserDetails;
 import com.sloth.plan_puzzle.common.security.jwt.JwtUtil;
 import com.sloth.plan_puzzle.dto.auth.JwtResponse;
 import com.sloth.plan_puzzle.dto.auth.LoginRequest;
@@ -31,8 +32,8 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public void logout(@AuthenticationPrincipal UserDetails userDetails) {
-        String loginId = userDetails.getUsername();
+    public void logout(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        final String loginId = userDetails.getUsername();
         authService.deleteExistingRefreshToken(loginId);
     }
 }

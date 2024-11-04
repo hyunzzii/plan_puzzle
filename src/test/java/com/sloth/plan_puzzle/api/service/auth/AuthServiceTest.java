@@ -39,7 +39,7 @@ class AuthServiceTest {
 
     @BeforeEach
     void setUpUser() {
-        UserJpaEntity userJpaEntity = UserJpaEntity.builder()
+        UserJpaEntity userEntity = UserJpaEntity.builder()
                 .loginId("loginId")
                 .loginPw(passwordEncoder.encode("password"))
                 .name("test")
@@ -48,7 +48,7 @@ class AuthServiceTest {
                 .ageGroup(AgeGroup.TWENTIES)
                 .role(UserRole.ROLE_USER)
                 .build();
-        userRepository.save(userJpaEntity);
+        userRepository.save(userEntity);
     }
 
     @DisplayName("password 검증에 성공했습니다.")
