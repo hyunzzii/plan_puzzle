@@ -48,10 +48,15 @@ public class SecurityConfig {
         http.authorizeHttpRequests(authMangerRequestMatcher -> authMangerRequestMatcher
                 .requestMatchers("/users/**").permitAll()
                 .requestMatchers("/auth/login","/auth/reissue").permitAll()
+                .requestMatchers(getSwaggerUIPath()).permitAll()
                 .anyRequest().authenticated());
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    private String[] getSwaggerUIPath() {
+        return new String[]{"/swagger-resources/**", "/swagger-ui/**", "/v3/api-docs/**", "/v3/api-docs"};
     }
 }
