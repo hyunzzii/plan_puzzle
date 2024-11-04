@@ -6,9 +6,9 @@ import com.sloth.plan_puzzle.domain.user.UserRole;
 import com.sloth.plan_puzzle.persistence.entity.BaseTimeEntity;
 import com.sloth.plan_puzzle.persistence.entity.channel.ChannelJpaEntity;
 import com.sloth.plan_puzzle.persistence.entity.subscription.SubscriptionJpaEntity;
-import com.sloth.plan_puzzle.persistence.entity.schedule.UserScheduleJpaEntity;
+import com.sloth.plan_puzzle.persistence.entity.schedule.user.UserScheduleJpaEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -62,7 +62,7 @@ public class UserJpaEntity extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private final List<UserScheduleJpaEntity> schedules = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
@@ -83,5 +83,9 @@ public class UserJpaEntity extends BaseTimeEntity {
         this.gender = gender;
         this.ageGroup = ageGroup;
         this.role = role;
+    }
+
+    public void addSchedule(final UserScheduleJpaEntity scheduleJpaEntity){
+        this.schedules.add(scheduleJpaEntity);
     }
 }
