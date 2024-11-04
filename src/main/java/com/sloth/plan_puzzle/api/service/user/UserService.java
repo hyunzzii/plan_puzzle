@@ -33,6 +33,6 @@ public class UserService {
     @Transactional
     public void createUser(final UserSignupRequest userSignupRequest) {
         User user = userSignupRequest.toDomain(UserRole.ROLE_USER);
-        userRepository.save(user.createSignupUserEntity(passwordEncoder));
+        userRepository.save(user.createEntity(passwordEncoder));
     }
 }
