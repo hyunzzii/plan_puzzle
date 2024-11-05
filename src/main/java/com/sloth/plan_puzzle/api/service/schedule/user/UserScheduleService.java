@@ -1,11 +1,13 @@
 package com.sloth.plan_puzzle.api.service.schedule.user;
 
+import static com.sloth.plan_puzzle.common.exception.CustomExceptionInfo.OVERLAPPING_SCHEDULE;
 import static com.sloth.plan_puzzle.domain.schedule.user.UserScheduleState.CANDIDATE;
 import static com.sloth.plan_puzzle.domain.schedule.user.UserScheduleState.CONFIRMED;
 
+import com.sloth.plan_puzzle.common.exception.CustomException;
 import com.sloth.plan_puzzle.domain.schedule.user.UserSchedule;
-import com.sloth.plan_puzzle.dto.schdule.user.UserScheduleCreateRequest;
-import com.sloth.plan_puzzle.dto.schdule.user.UserScheduleUpdateRequest;
+import com.sloth.plan_puzzle.dto.schedule.user.CreateUserScheduleRequest;
+import com.sloth.plan_puzzle.dto.schedule.user.UpdateUserScheduleRequest;
 import com.sloth.plan_puzzle.persistence.entity.schedule.user.UserScheduleJpaEntity;
 import com.sloth.plan_puzzle.persistence.entity.user.UserJpaEntity;
 import com.sloth.plan_puzzle.persistence.repository.schedule.user.UserScheduleRepository;
@@ -24,20 +26,22 @@ public class UserScheduleService {
     private final UserRepository userRepository;
 
     //CRUD
-    public UserSchedule createSchedule(final UserScheduleCreateRequest scheduleRequest, final Long userId) {
-        UserSchedule schedule = scheduleRequest.toDomain().validateSchedule();
-        UserJpaEntity userEntity = userRepository.getUserById(userId);
-        UserScheduleJpaEntity scheduleEntity = schedule.createEntity(userEntity);
+    public UserSchedule createSchedule(final CreateUserScheduleRequest scheduleRequest, final Long userId) {
+        final UserSchedule schedule = scheduleRequest.toDomain().validateSchedule();
+        isAvailableSchedule(schedule.startDateTime(), schedule.endDateTime(), userId);    //검증
 
-        userEntity.addSchedule(scheduleEntity);
+        final UserJpaEntity userEntity = userRepository.getUserById(userId);
+        final UserScheduleJpaEntity scheduleEntity = schedule.toEntity(userEntity);
         scheduleRepository.save(scheduleEntity);
         return UserSchedule.fromEntity(scheduleEntity);
     }
 
-    public void updateSchedule(final Long scheduleId, final UserScheduleUpdateRequest scheduleRequest,
+    public void updateSchedule(final Long scheduleId, final UpdateUserScheduleRequest scheduleRequest,
                                final Long userId) {
-        UserSchedule schedule = scheduleRequest.toDomain().validateSchedule();
-        UserScheduleJpaEntity scheduleEntity = scheduleRepository.getScheduleByIdAndUserId(scheduleId, userId);
+        final UserSchedule schedule = scheduleRequest.toDomain().validateSchedule();
+        isAvailableSchedule(schedule.startDateTime(), schedule.endDateTime(), userId);    //검증
+
+        final UserScheduleJpaEntity scheduleEntity = scheduleRepository.getScheduleByIdAndUserId(scheduleId, userId);
         scheduleEntity.update(schedule);
         scheduleRepository.save(scheduleEntity);
     }
@@ -47,7 +51,7 @@ public class UserScheduleService {
     }
 
     public void updateScheduleStatus(final Long scheduleId, final Long userId) {
-        UserScheduleJpaEntity scheduleEntity = scheduleRepository.getScheduleByIdAndUserId(scheduleId, userId);
+        final UserScheduleJpaEntity scheduleEntity = scheduleRepository.getScheduleByIdAndUserId(scheduleId, userId);
         scheduleEntity.toggleStatus();
         scheduleRepository.save(scheduleEntity);
     }
@@ -56,18 +60,25 @@ public class UserScheduleService {
     @Transactional(readOnly = true)
     public List<UserSchedule> getSchedulesWithinPeriod(final LocalDateTime startOfPeriod,
                                                        final LocalDateTime endOfPeriod, final Long userId) {
-        return scheduleRepository.findByPeriodAndUserId(
-                        startOfPeriod, endOfPeriod, CONFIRMED, userId)
-                .stream()
+        return scheduleRepository.findByPeriodAndUserId(startOfPeriod, endOfPeriod, CONFIRMED, userId).stream()
                 .map(UserSchedule::fromEntity)
                 .toList();
     }
 
+
     @Transactional(readOnly = true)
     public List<UserSchedule> getCandidateSchedules(final Long userId) {
-        return scheduleRepository.findByStateAndUserId(CANDIDATE, userId)
-                .stream()
+        return scheduleRepository.findByStateAndUserId(CANDIDATE, userId).stream()
                 .map(UserSchedule::fromEntity)
                 .toList();
+    }
+
+    //검증
+    @Transactional(readOnly = true)
+    public void isAvailableSchedule(final LocalDateTime startOfPeriod,
+                                    final LocalDateTime endOfPeriod, final Long userId) {
+        if (scheduleRepository.findByPeriodAndUserId(startOfPeriod, endOfPeriod, CONFIRMED, userId).isEmpty()) {
+            throw new CustomException(OVERLAPPING_SCHEDULE);
+        }
     }
 }

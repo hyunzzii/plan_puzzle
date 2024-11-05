@@ -15,8 +15,8 @@ import com.sloth.plan_puzzle.domain.schedule.user.UserScheduleState;
 import com.sloth.plan_puzzle.domain.user.AgeGroup;
 import com.sloth.plan_puzzle.domain.user.Gender;
 import com.sloth.plan_puzzle.domain.user.UserRole;
-import com.sloth.plan_puzzle.dto.schdule.user.UserScheduleCreateRequest;
-import com.sloth.plan_puzzle.dto.schdule.user.UserScheduleUpdateRequest;
+import com.sloth.plan_puzzle.dto.schedule.user.CreateUserScheduleRequest;
+import com.sloth.plan_puzzle.dto.schedule.user.UpdateUserScheduleRequest;
 import com.sloth.plan_puzzle.persistence.entity.schedule.user.UserScheduleJpaEntity;
 import com.sloth.plan_puzzle.persistence.entity.user.UserJpaEntity;
 import com.sloth.plan_puzzle.persistence.repository.schedule.user.UserScheduleRepository;
@@ -59,7 +59,7 @@ class UserScheduleServiceTest {
     @Test
     void createScheduleTest() {
         //given
-        UserScheduleCreateRequest request = createScheduleRequest("수강신청", "졸업하자...");
+        CreateUserScheduleRequest request = createScheduleRequest("수강신청", "졸업하자...");
 
         //when
         UserSchedule schedule = scheduleService.createSchedule(request, userEntity.getId());
@@ -72,13 +72,30 @@ class UserScheduleServiceTest {
 
     }
 
+    @DisplayName("content가 null인 schedule을 만들 수 있습니다.")
+    @Test
+    void createScheduleContentNullTest() {
+        //given
+        CreateUserScheduleRequest request = createScheduleRequest("수강신청", null);
+
+        //when
+        UserSchedule schedule = scheduleService.createSchedule(request, userEntity.getId());
+
+        //then
+        UserScheduleJpaEntity scheduleEntity = scheduleRepository.getScheduleById(schedule.id());
+        assertThat(scheduleEntity)
+                .extracting("title", "content")
+                .containsExactly("수강신청", null);
+
+    }
+
     @DisplayName("schedule 정보를 수정할 수 있습니다.")
     @Test
     public void updateSchedule() {
         //given
         UserScheduleJpaEntity scheduleEntity = saveScheduleEntity("점심 약속", "파스타와 뇨끼", CONFIRMED, "2024-10-25T13:00",
                 "2024-10-25T13:30");
-        UserScheduleUpdateRequest request = createUpdateScheduleRequest("점심 약속", "샤브샤브");
+        UpdateUserScheduleRequest request = createUpdateScheduleRequest("점심 약속", "샤브샤브");
 
         //when
         scheduleService.updateSchedule(scheduleEntity.getId(), request, userEntity.getId());
@@ -172,19 +189,12 @@ class UserScheduleServiceTest {
 
     //메서드
     private UserJpaEntity createUserEntity() {
-        return UserJpaEntity.builder()
-                .loginId("loginId")
-                .loginPw("password")
-                .name("test")
-                .email("test@ajou.ac.kr")
-                .gender(Gender.FEMALE)
-                .ageGroup(AgeGroup.TWENTIES)
-                .role(UserRole.ROLE_USER)
-                .build();
+        return UserJpaEntity.create("loginId", "password", "test", "email", Gender.FEMALE,
+                AgeGroup.TWENTIES, UserRole.ROLE_USER);
     }
 
-    private UserScheduleCreateRequest createScheduleRequest(String title, String content) {
-        return UserScheduleCreateRequest.builder()
+    private CreateUserScheduleRequest createScheduleRequest(String title, String content) {
+        return CreateUserScheduleRequest.builder()
                 .startDateTime(LocalDateTime.parse("2024-10-25T13:00"))
                 .endDateTime(LocalDateTime.parse("2024-10-25T13:30"))
                 .title(title)
@@ -193,8 +203,8 @@ class UserScheduleServiceTest {
                 .build();
     }
 
-    private UserScheduleUpdateRequest createUpdateScheduleRequest(String title, String content) {
-        return UserScheduleUpdateRequest.builder()
+    private UpdateUserScheduleRequest createUpdateScheduleRequest(String title, String content) {
+        return UpdateUserScheduleRequest.builder()
                 .startDateTime(LocalDateTime.parse("2024-10-25T13:00"))
                 .endDateTime(LocalDateTime.parse("2024-10-25T13:30"))
                 .title(title)
@@ -204,13 +214,10 @@ class UserScheduleServiceTest {
 
     private UserScheduleJpaEntity saveScheduleEntity(String title, String content, UserScheduleState state,
                                                      String startDateTime, String endDateTime) {
-        return scheduleRepository.save(UserScheduleJpaEntity.builder()
-                .title(title)
-                .content(content)
-                .state(state)
-                .startDateTime(LocalDateTime.parse(startDateTime))
-                .endDateTime(LocalDateTime.parse(endDateTime))
-                .user(userEntity)
-                .build());
+        return scheduleRepository.save(
+                UserScheduleJpaEntity.create(
+                        LocalDateTime.parse(startDateTime), LocalDateTime.parse(endDateTime), title, content, state,
+                        userEntity
+                ));
     }
 }
