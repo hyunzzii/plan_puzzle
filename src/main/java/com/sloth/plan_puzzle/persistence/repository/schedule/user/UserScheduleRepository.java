@@ -1,7 +1,9 @@
 package com.sloth.plan_puzzle.persistence.repository.schedule.user;
 
+import static com.sloth.plan_puzzle.common.exception.CustomExceptionInfo.NOT_FOUND_SCHEDULE;
+import static com.sloth.plan_puzzle.common.exception.CustomExceptionInfo.UNAUTHORIZED_ACCESS;
+
 import com.sloth.plan_puzzle.common.exception.CustomException;
-import com.sloth.plan_puzzle.common.exception.CustomExceptionInfo;
 import com.sloth.plan_puzzle.domain.schedule.user.UserScheduleState;
 import com.sloth.plan_puzzle.persistence.entity.schedule.user.UserScheduleJpaEntity;
 import io.lettuce.core.dynamic.annotation.Param;
@@ -35,24 +37,23 @@ public interface UserScheduleRepository extends JpaRepository<UserScheduleJpaEnt
     //default는 getEntity~
     default UserScheduleJpaEntity getScheduleById(final Long id) {
         return findById(id)
-                .orElseThrow(() -> new CustomException(CustomExceptionInfo.NOT_FOUND_SCHEDULE));
+                .orElseThrow(() -> new CustomException(NOT_FOUND_SCHEDULE));
     }
 
     default boolean existsScheduleByIdAndUserId(final Long id, final Long userId) {
-        findByScheduleIdAndUserId(id, userId).orElseThrow(
-                () -> new CustomException(CustomExceptionInfo.NOT_FOUND_SCHEDULE)
-        );
+        findByScheduleIdAndUserId(id, userId)
+                .orElseThrow(() -> new CustomException(UNAUTHORIZED_ACCESS));
         return true;
     }
 
     default UserScheduleJpaEntity getScheduleByIdAndUserId(final Long id, final Long userId) {
         return findByScheduleIdAndUserId(id, userId)
-                .orElseThrow(() -> new CustomException(CustomExceptionInfo.NOT_FOUND_SCHEDULE));
+                .orElseThrow(() -> new CustomException(UNAUTHORIZED_ACCESS));
     }
 
     default void deleteScheduleById(final Long id, final Long userId) {
         if (!existsScheduleByIdAndUserId(id, userId)) {
-            throw new CustomException(CustomExceptionInfo.NOT_FOUND_SCHEDULE);
+            throw new CustomException(UNAUTHORIZED_ACCESS);
         }
         deleteById(id);
     }

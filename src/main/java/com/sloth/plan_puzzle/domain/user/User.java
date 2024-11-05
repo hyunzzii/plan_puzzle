@@ -18,7 +18,7 @@ public record User(
         UserRole role
 
 ) {
-    public static User fromEntity(final UserJpaEntity userEntity){
+    public static User fromEntity(final UserJpaEntity userEntity) {
         return User.builder()
                 .id(userEntity.getId())
                 .loginId(userEntity.getLoginId())
@@ -31,20 +31,12 @@ public record User(
                 .build();
     }
 
-    public UserJpaEntity createEntity(final PasswordEncoder passwordEncoder) {
-        return UserJpaEntity.builder()
-                .loginId(loginId)
-                .loginPw(passwordEncoder.encode(loginPw))
-                .name(name)
-                .email(email)
-                .ageGroup(ageGroup)
-                .gender(gender)
-                .role(role)
-                .build();
+    public UserJpaEntity toEntity(final PasswordEncoder passwordEncoder) {
+        return UserJpaEntity.create(loginId, passwordEncoder.encode(loginPw), name, email, gender, ageGroup, role);
     }
 
-    public void validatePassword(final PasswordEncoder passwordEncoder, final String loginPw){
-        if(!passwordEncoder.matches(loginPw,this.loginPw)){
+    public void validatePassword(final PasswordEncoder passwordEncoder, final String loginPw) {
+        if (!passwordEncoder.matches(loginPw, this.loginPw)) {
             throw new CustomException(CustomExceptionInfo.INVALID_PASSWORD);
         }
     }

@@ -12,27 +12,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional(readOnly = true)
     public void isDuplicateLoginId(final String loginId) {
         if (userRepository.existsByLoginId(loginId)) {
             throw new CustomException(CustomExceptionInfo.DUPLICATE_ID);
         }
     }
 
-//    public void isDuplicateNickname(final String nickname) {
-//        if (userRepositoryImpl.existsByNickname(nickname)) {
-//            throw new CustomException(CustomExceptionInfo.DUPLICATE_NICKNAME);
-//        }
-//    }
-
-    @Transactional
     public void createUser(final UserSignupRequest userSignupRequest) {
-        User user = userSignupRequest.toDomain(UserRole.ROLE_USER);
-        userRepository.save(user.createEntity(passwordEncoder));
+        final User user = userSignupRequest.toDomain(UserRole.ROLE_USER);
+        userRepository.save(user.toEntity(passwordEncoder));
     }
 }

@@ -1,9 +1,11 @@
 package com.sloth.plan_puzzle.domain.schedule.user;
 
+import static com.sloth.plan_puzzle.common.exception.CustomExceptionInfo.*;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.sloth.plan_puzzle.common.exception.CustomException;
+import com.sloth.plan_puzzle.common.exception.CustomExceptionInfo;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,7 +30,7 @@ class UserScheduleTest {
         //when, then
         assertThatThrownBy(userSchedule::validateSchedule)
                 .isInstanceOf(CustomException.class)
-                .hasMessage("invalid schedule date time");
+                .hasMessage(INVALID_SCHEDULE_TIME.getMessage());
     }
 
     private UserSchedule createSchedule(String start, String end) {

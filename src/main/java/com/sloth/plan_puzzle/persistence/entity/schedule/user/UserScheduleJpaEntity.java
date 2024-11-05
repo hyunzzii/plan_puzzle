@@ -1,6 +1,7 @@
 package com.sloth.plan_puzzle.persistence.entity.schedule.user;
 
-import static com.sloth.plan_puzzle.domain.schedule.user.UserScheduleState.*;
+import static com.sloth.plan_puzzle.domain.schedule.user.UserScheduleState.CANDIDATE;
+import static com.sloth.plan_puzzle.domain.schedule.user.UserScheduleState.CONFIRMED;
 
 import com.sloth.plan_puzzle.domain.schedule.user.UserSchedule;
 import com.sloth.plan_puzzle.domain.schedule.user.UserScheduleState;
@@ -52,14 +53,28 @@ public class UserScheduleJpaEntity {
     private UserJpaEntity user;
 
     @Builder
-    public UserScheduleJpaEntity(final LocalDateTime startDateTime, final LocalDateTime endDateTime, final String title,
-                                 final String content, final UserScheduleState state, final UserJpaEntity user) {
+    private UserScheduleJpaEntity(final LocalDateTime startDateTime, final LocalDateTime endDateTime,
+                                  final String title, final String content, final UserScheduleState state,
+                                  final UserJpaEntity user) {
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
         this.title = title;
         this.content = content;
         this.state = state;
         this.user = user;
+    }
+
+    public static UserScheduleJpaEntity create(final LocalDateTime startDateTime, final LocalDateTime endDateTime,
+                                               final String title, final String content, final UserScheduleState state,
+                                               final UserJpaEntity userEntity) {
+        return UserScheduleJpaEntity.builder()
+                .startDateTime(startDateTime)
+                .endDateTime(endDateTime)
+                .title(title)
+                .content(content)
+                .state(state)
+                .user(userEntity)
+                .build();
     }
 
     public void update(final UserSchedule userSchedule) {

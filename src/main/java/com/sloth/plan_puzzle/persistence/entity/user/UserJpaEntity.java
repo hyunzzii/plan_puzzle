@@ -5,7 +5,6 @@ import com.sloth.plan_puzzle.domain.user.Gender;
 import com.sloth.plan_puzzle.domain.user.UserRole;
 import com.sloth.plan_puzzle.persistence.entity.BaseTimeEntity;
 import com.sloth.plan_puzzle.persistence.entity.channel.ChannelJpaEntity;
-import com.sloth.plan_puzzle.persistence.entity.subscription.SubscriptionJpaEntity;
 import com.sloth.plan_puzzle.persistence.entity.schedule.user.UserScheduleJpaEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -65,14 +64,11 @@ public class UserJpaEntity extends BaseTimeEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private final List<UserScheduleJpaEntity> schedules = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private final List<ChannelJpaEntity> channels = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
-    private final List<SubscriptionJpaEntity> subscriptions = new ArrayList<>();
-
     @Builder
-    public UserJpaEntity(
+    private UserJpaEntity(
             final String loginId, final String loginPw, final String name, final String email, final Gender gender,
             final AgeGroup ageGroup, final UserRole role
     ) {
@@ -85,7 +81,25 @@ public class UserJpaEntity extends BaseTimeEntity {
         this.role = role;
     }
 
-    public void addSchedule(final UserScheduleJpaEntity scheduleJpaEntity){
-        this.schedules.add(scheduleJpaEntity);
+    public static UserJpaEntity create(final String loginId, final String loginPw, final String name,
+                                       final String email, final Gender gender, final AgeGroup ageGroup,
+                                       final UserRole role) {
+        return UserJpaEntity.builder()
+                .loginId(loginId)
+                .loginPw(loginPw)
+                .name(name)
+                .email(email)
+                .ageGroup(ageGroup)
+                .gender(gender)
+                .role(role)
+                .build();
     }
+
+//    public void addChannel(final ChannelJpaEntity channelEntity){
+//        this.channels.add(channelEntity);
+//    }
+//
+//    public void addSchedule(final UserScheduleJpaEntity scheduleEntity){
+//        this.schedules.add(scheduleEntity);
+//    }
 }
