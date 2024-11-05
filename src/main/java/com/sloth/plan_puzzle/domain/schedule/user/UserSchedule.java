@@ -29,15 +29,8 @@ public record UserSchedule(
                 .build();
     }
 
-    public UserScheduleJpaEntity createEntity(final UserJpaEntity userEntity) {
-        return UserScheduleJpaEntity.builder()
-                .startDateTime(startDateTime)
-                .endDateTime(endDateTime)
-                .title(title)
-                .content(content)
-                .state(state)
-                .user(userEntity)
-                .build();
+    public UserScheduleJpaEntity toEntity(final UserJpaEntity userEntity) {
+        return UserScheduleJpaEntity.create(startDateTime, endDateTime, title, content, state, userEntity);
     }
 
     public UserSchedule validateSchedule() {

@@ -3,10 +3,9 @@ package com.sloth.plan_puzzle.api.controller.schedule.user;
 import com.sloth.plan_puzzle.api.service.schedule.user.UserScheduleService;
 import com.sloth.plan_puzzle.common.security.jwt.CustomUserDetails;
 import com.sloth.plan_puzzle.dto.ListWrapperResponse;
-import com.sloth.plan_puzzle.dto.schdule.user.UserScheduleCreateRequest;
-import com.sloth.plan_puzzle.dto.schdule.user.UserScheduleIdResponse;
-import com.sloth.plan_puzzle.dto.schdule.user.UserScheduleResponse;
-import com.sloth.plan_puzzle.dto.schdule.user.UserScheduleUpdateRequest;
+import com.sloth.plan_puzzle.dto.schedule.user.CreateUserScheduleRequest;
+import com.sloth.plan_puzzle.dto.schedule.user.UpdateUserScheduleRequest;
+import com.sloth.plan_puzzle.dto.schedule.user.UserScheduleResponse;
 import jakarta.validation.Valid;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -30,16 +29,16 @@ public class UserScheduleController {
     private final UserScheduleService scheduleService;
 
     @PostMapping
-    public UserScheduleIdResponse createSchedule(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                                 @RequestBody @Valid UserScheduleCreateRequest request) {
+    public void createSchedule(@AuthenticationPrincipal CustomUserDetails userDetails,
+                               @RequestBody @Valid CreateUserScheduleRequest request) {
         final Long userId = userDetails.getUserId();
-        return UserScheduleIdResponse.fromDomain(scheduleService.createSchedule(request, userId));
+        scheduleService.createSchedule(request, userId);
     }
 
     @PutMapping("/{scheduleId}")
     public void updateSchedule(@AuthenticationPrincipal CustomUserDetails userDetails,
                                @PathVariable Long scheduleId,
-                               @RequestBody @Valid UserScheduleUpdateRequest request) {
+                               @RequestBody @Valid UpdateUserScheduleRequest request) {
         final Long userId = userDetails.getUserId();
         scheduleService.updateSchedule(scheduleId, request, userId);
     }
@@ -59,14 +58,16 @@ public class UserScheduleController {
     }
 
     @GetMapping("/proposals")
-    public ListWrapperResponse<UserScheduleResponse> getCandidateSchedules(@AuthenticationPrincipal CustomUserDetails userDetails){
+    public ListWrapperResponse<UserScheduleResponse> getCandidateSchedules(
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
         final Long userId = userDetails.getUserId();
         return ListWrapperResponse.of(
                 UserScheduleResponse.fromDomainList(scheduleService.getCandidateSchedules(userId)));
     }
 
     @GetMapping("/next")
-    public ListWrapperResponse<UserScheduleResponse> getRemainingSchedules(@AuthenticationPrincipal CustomUserDetails userDetails){
+    public ListWrapperResponse<UserScheduleResponse> getRemainingSchedules(
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
         final Long userId = userDetails.getUserId();
         final LocalDateTime now = LocalDateTime.now();
         final LocalDateTime tomorrow = now.plusDays(1).toLocalDate().atStartOfDay();
@@ -75,12 +76,14 @@ public class UserScheduleController {
     }
 
     @GetMapping
-    public ListWrapperResponse<UserScheduleResponse> getSchedulesByPeriod(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                                                          @RequestParam("start") LocalDate start, @RequestParam("end") LocalDate end){
+    public ListWrapperResponse<UserScheduleResponse> getSchedulesByPeriod(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestParam("start") LocalDate start, @RequestParam("end") LocalDate end) {
         final Long userId = userDetails.getUserId();
         final LocalDateTime startDateTime = start.atStartOfDay();
-        final LocalDateTime endDateTime =  end.atStartOfDay();
+        final LocalDateTime endDateTime = end.atStartOfDay();
         return ListWrapperResponse.of(
-                UserScheduleResponse.fromDomainList(scheduleService.getSchedulesWithinPeriod(startDateTime,endDateTime,userId)));
+                UserScheduleResponse.fromDomainList(
+                        scheduleService.getSchedulesWithinPeriod(startDateTime, endDateTime, userId)));
     }
 }

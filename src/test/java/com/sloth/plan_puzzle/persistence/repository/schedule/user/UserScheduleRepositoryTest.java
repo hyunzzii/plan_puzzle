@@ -1,5 +1,6 @@
 package com.sloth.plan_puzzle.persistence.repository.schedule.user;
 
+import static com.sloth.plan_puzzle.common.exception.CustomExceptionInfo.*;
 import static com.sloth.plan_puzzle.domain.schedule.user.UserScheduleState.CANDIDATE;
 import static com.sloth.plan_puzzle.domain.schedule.user.UserScheduleState.CONFIRMED;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,8 +40,6 @@ class UserScheduleRepositoryTest {
     @Autowired
     private UserRepository userRepository;
 
-    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
     private UserScheduleJpaEntity scheduleEntity;
     private UserJpaEntity userEntity;
 
@@ -58,7 +57,7 @@ class UserScheduleRepositoryTest {
         //when, then
         assertThatThrownBy(() -> scheduleRepository.getScheduleById(scheduleEntity.getId() + 1))
                 .isInstanceOf(CustomException.class)
-                .hasMessage(CustomExceptionInfo.NOT_FOUND_SCHEDULE.getMessage());
+                .hasMessage(NOT_FOUND_SCHEDULE.getMessage());
     }
 
     @DisplayName("schedule의 주인을 확인하여 schedule을 가져옵니다.")
@@ -80,7 +79,7 @@ class UserScheduleRepositoryTest {
         assertThatThrownBy(
                 () -> scheduleRepository.getScheduleByIdAndUserId(scheduleEntity.getId(), userEntity.getId() + 1))
                 .isInstanceOf(CustomException.class)
-                .hasMessage(CustomExceptionInfo.NOT_FOUND_SCHEDULE.getMessage());
+                .hasMessage(UNAUTHORIZED_ACCESS.getMessage());
     }
 
     @DisplayName("schedule 기간 조회가 잘 수행됩니다.")
@@ -138,9 +137,10 @@ class UserScheduleRepositoryTest {
 
 
     private UserJpaEntity saveUserEntity() {
+        final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         return userRepository.save(UserJpaEntity.builder()
                 .loginId("loginId")
-                .loginPw("password")
+                .loginPw(passwordEncoder.encode("password"))
                 .name("test")
                 .email("test@ajou.ac.kr")
                 .gender(Gender.FEMALE)
