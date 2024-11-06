@@ -1,5 +1,7 @@
 package com.sloth.plan_puzzle.api.service.channel;
 
+import static com.sloth.plan_puzzle.common.exception.CustomExceptionInfo.*;
+
 import com.sloth.plan_puzzle.common.exception.CustomException;
 import com.sloth.plan_puzzle.common.exception.CustomExceptionInfo;
 import com.sloth.plan_puzzle.domain.channel.Channel;
@@ -45,7 +47,7 @@ public class ChannelService {
     @Transactional(readOnly = true)
     public void isDuplicateNickname(final String nickname) {
         if (channelRepository.existsByNickname(nickname)) {
-            throw new CustomException(CustomExceptionInfo.DUPLICATE_NICKNAME);
+            throw new CustomException(DUPLICATE_NICKNAME);
         }
     }
 

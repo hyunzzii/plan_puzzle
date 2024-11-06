@@ -29,6 +29,7 @@ public record Notice(
                 .title(title)
                 .content(content)
                 .imgUrl(imgUrl)
+                .channelEntity(channelEntity)
                 .build();
     }
 
