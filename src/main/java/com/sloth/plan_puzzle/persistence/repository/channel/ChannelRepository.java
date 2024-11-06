@@ -28,6 +28,12 @@ public interface ChannelRepository extends JpaRepository<ChannelJpaEntity, Long>
     @Query("SELECT COUNT(c) > 0 FROM ChannelJpaEntity c WHERE c.id = :id AND c.user.id = :userId")
     boolean existsByIdAndUserId(@Param("id") Long id, @Param("userId") Long userId);
 
+    default void existsChannelByIdAndUserId(final Long id, final Long userId) {
+        if(!existsByIdAndUserId(id, userId)){
+            throw new CustomException(UNAUTHORIZED_ACCESS);
+        }
+    }
+
     default ChannelJpaEntity getChannelById(final Long id) {
         return findById(id).orElseThrow(() ->
                 new CustomException(NOT_FOUND_CHANNEL));

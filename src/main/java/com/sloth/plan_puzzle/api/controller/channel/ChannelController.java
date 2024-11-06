@@ -70,7 +70,7 @@ public class ChannelController {
     @GetMapping
     public Page<SimpleChannelResponse> getChannels(@RequestParam("page") Integer page) {
         final int PAGE_SIZE = 20;
-        final Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by("createDate").descending());
+        final Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by("createdDate").descending());
         return channelService.getChannelsByPaging(pageable)
                 .map(SimpleChannelResponse::fromDomain);
     }
@@ -79,7 +79,7 @@ public class ChannelController {
     public Page<SimpleChannelResponse> getChannelsForSearch(@RequestParam("page") Integer page,
                                                             @RequestParam("keyword") String keyword) {
         final int PAGE_SIZE = 20;
-        final Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by("createDate").descending());
+        final Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by("createdDate").descending());
         return channelService.getChannelsByPagingForSearch(keyword, pageable)
                 .map(SimpleChannelResponse::fromDomain);
     }
@@ -100,7 +100,7 @@ public class ChannelController {
     public Page<NoticeResponse> getNotices(@PathVariable Long channelId,
                                            @RequestParam Integer page) {
         final int PAGE_SIZE = 5;
-        final Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by("createDate").descending());
+        final Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by("createdDate").descending());
         return noticeService.getNoticesByPaging(channelId, pageable)
                 .map(NoticeResponse::fromEntity);
     }

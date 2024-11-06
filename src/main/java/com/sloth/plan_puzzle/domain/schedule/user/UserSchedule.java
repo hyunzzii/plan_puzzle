@@ -2,6 +2,7 @@ package com.sloth.plan_puzzle.domain.schedule.user;
 
 import static com.sloth.plan_puzzle.common.exception.CustomExceptionInfo.INVALID_SCHEDULE_TIME;
 
+import com.sloth.plan_puzzle.common.TimeValidator;
 import com.sloth.plan_puzzle.common.exception.CustomException;
 import com.sloth.plan_puzzle.persistence.entity.schedule.user.UserScheduleJpaEntity;
 import com.sloth.plan_puzzle.persistence.entity.user.UserJpaEntity;
@@ -34,6 +35,9 @@ public record UserSchedule(
     }
 
     public UserSchedule validateSchedule() {
+        TimeValidator.isValidateTimeFormat(startDateTime);
+        TimeValidator.isValidateTimeFormat(endDateTime);
+
         if (startDateTime.isAfter(endDateTime)) {
             throw new CustomException(INVALID_SCHEDULE_TIME);
         }
