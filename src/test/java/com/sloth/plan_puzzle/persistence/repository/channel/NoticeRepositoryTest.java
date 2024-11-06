@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
@@ -61,7 +62,7 @@ class NoticeRepositoryTest {
     void findByChannelIdTest() {
         //given
         //when
-        Pageable pageable = PageRequest.of(0, 10);
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("createdDate").descending());
         List<NoticeJpaEntity> foundNotices =
                 noticeRepository.findByChannelId(channelEntity.getId(), pageable)
                         .stream().toList();
@@ -104,11 +105,7 @@ class NoticeRepositoryTest {
     }
 
     private NoticeJpaEntity saveNoticeEntity(String title, String content, ChannelJpaEntity channelEntity) {
-        return noticeRepository.save(NoticeJpaEntity.builder()
-                .title(title)
-                .content(content)
-                .channelEntity(channelEntity)
-                .build());
+        return noticeRepository.save(NoticeJpaEntity.create(title,content,channelEntity));
     }
 
 

@@ -38,11 +38,30 @@ public class NoticeJpaEntity extends BaseTimeEntity {
     private ChannelJpaEntity channel;
 
     @Builder
-    public NoticeJpaEntity(final String title, final String content, final String imgUrl,
+    private NoticeJpaEntity(final String title, final String content, final String imgUrl,
                            final ChannelJpaEntity channelEntity) {
         this.title = title;
         this.content = content;
         this.imgUrl = imgUrl;
         this.channel = channelEntity;
+    }
+
+    public static NoticeJpaEntity create(final String title, final String content, final String imgUrl,
+                                         final ChannelJpaEntity channelEntity){
+        return NoticeJpaEntity.builder()
+                .title(title)
+                .content(content)
+                .imgUrl(imgUrl)
+                .channelEntity(channelEntity)
+                .build();
+    }
+
+    public static NoticeJpaEntity create(final String title, final String content,
+                                         final ChannelJpaEntity channelEntity){
+        return NoticeJpaEntity.builder()
+                .title(title)
+                .content(content)
+                .channelEntity(channelEntity)
+                .build();
     }
 }

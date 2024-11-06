@@ -39,7 +39,7 @@ public class UserScheduleService {
     public void updateSchedule(final Long scheduleId, final UpdateUserScheduleRequest scheduleRequest,
                                final Long userId) {
         final UserSchedule schedule = scheduleRequest.toDomain().validateSchedule();
-        isAvailableSchedule(schedule.startDateTime(), schedule.endDateTime(), userId);    //검증
+        isAvailableScheduleForUpdate(scheduleId, schedule.startDateTime(), schedule.endDateTime(), userId);    //검증
 
         final UserScheduleJpaEntity scheduleEntity = scheduleRepository.getScheduleByIdAndUserId(scheduleId, userId);
         scheduleEntity.update(schedule);
@@ -77,7 +77,20 @@ public class UserScheduleService {
     @Transactional(readOnly = true)
     public void isAvailableSchedule(final LocalDateTime startOfPeriod,
                                     final LocalDateTime endOfPeriod, final Long userId) {
-        if (scheduleRepository.findByPeriodAndUserId(startOfPeriod, endOfPeriod, CONFIRMED, userId).isEmpty()) {
+        if (!scheduleRepository.findByPeriodAndUserId(startOfPeriod, endOfPeriod, CONFIRMED, userId).isEmpty()) {
+            throw new CustomException(OVERLAPPING_SCHEDULE);
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public void isAvailableScheduleForUpdate(final Long scheduleId, final LocalDateTime startDateTime,
+                                             final LocalDateTime endDateTime, final Long userId) {
+        final List<UserScheduleJpaEntity> schedules = scheduleRepository.findByPeriodAndUserId(
+                startDateTime, endDateTime, CONFIRMED, userId);
+        if (schedules.size() == 1 && schedules.get(0).getId().equals(scheduleId)) {
+            return;
+        }
+        if (!schedules.isEmpty()) {
             throw new CustomException(OVERLAPPING_SCHEDULE);
         }
     }

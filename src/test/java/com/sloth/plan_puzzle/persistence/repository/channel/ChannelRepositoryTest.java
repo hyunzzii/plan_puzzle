@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
@@ -75,7 +76,7 @@ class ChannelRepositoryTest {
         saveChannelEntity("딸기우유", userEntity, "딸기 치즈 타르트 최고");
         saveChannelEntity("망고+코코넛", userEntity, "망고 코코넛 스무디 먹고싶다...");
         //when
-        Pageable pageable = PageRequest.of(0, 10);
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("createdDate").descending());
         List<ChannelJpaEntity> foundChannelEntity = channelRepository.getChannelsForSearch("타르트",pageable)
                         .stream().toList();
         //then
@@ -83,8 +84,8 @@ class ChannelRepositoryTest {
                 .hasSize(2)
                 .extracting("nickname", "user","introduction")
                 .containsExactly(
-                        tuple("타르트", userEntity,"카페 페라는 사랑!"),
-                        tuple("딸기우유", userEntity,"딸기 치즈 타르트 최고")
+                        tuple("딸기우유", userEntity,"딸기 치즈 타르트 최고"),
+                        tuple("타르트", userEntity,"카페 페라는 사랑!")
                 );
 
     }

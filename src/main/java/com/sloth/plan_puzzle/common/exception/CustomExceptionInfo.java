@@ -7,7 +7,8 @@ public enum CustomExceptionInfo {
     //400
     INVALID_SCHEDULE_TIME(400, "invalid schedule date time", 400001),
     INVALID_IMG_URL(400, "invalid img url", 4000002),
-    INVALID_RECRUIT_COUNT(400, "participation should be bigger than current recruit count", 400002),
+    INVALID_RECRUIT_COUNT(400, "participation should be bigger than current recruit count", 400003),
+    INVALID_TIME_FORMAT(400,"invalid time format",400004),
 
     //401
     //jwt

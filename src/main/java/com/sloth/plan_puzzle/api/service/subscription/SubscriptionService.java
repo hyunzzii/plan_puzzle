@@ -14,8 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class SubscriptionService {
-    private SubscriptionRepository subscriptionRepository;
-    private ChannelRepository channelRepository;
+    private final SubscriptionRepository subscriptionRepository;
+    private final ChannelRepository channelRepository;
 
     public void subscribe(final Long subscriberId, final Long subscribedId, final Long userId) {
         final ChannelJpaEntity subscriber = channelRepository.getChannelByIdAndUserId(subscriberId, userId);
@@ -24,13 +24,13 @@ public class SubscriptionService {
     }
 
     public void unSubscribe(final Long subscriberId, final Long subscribedId, final Long userId) {
-        channelRepository.existsByIdAndUserId(subscriberId, userId);
+        channelRepository.existsChannelByIdAndUserId(subscriberId, userId);
         subscriptionRepository.deleteSubscriptionBySubscribe(subscriberId, subscribedId);
     }
 
     @Transactional(readOnly = true)
     public List<Channel> getSubscribedChannels(final Long channelId, final Long userId) {
-        channelRepository.existsByIdAndUserId(channelId, userId);
+        channelRepository.existsChannelByIdAndUserId(channelId, userId);
         List<SubscriptionJpaEntity> subscriptionEntityList = subscriptionRepository.findBySubscriberId(channelId);
         return subscriptionEntityList.stream()
                 .map(subscription -> Channel.fromEntity(subscription.getSubscribed()))
