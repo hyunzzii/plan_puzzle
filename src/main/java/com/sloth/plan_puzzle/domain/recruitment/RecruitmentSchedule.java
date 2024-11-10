@@ -2,7 +2,7 @@ package com.sloth.plan_puzzle.domain.recruitment;
 
 import static com.sloth.plan_puzzle.common.exception.CustomExceptionInfo.INVALID_SCHEDULE_TIME;
 
-import com.sloth.plan_puzzle.common.TimeValidator;
+import com.sloth.plan_puzzle.common.validator.TimeValidator;
 import com.sloth.plan_puzzle.common.exception.CustomException;
 import com.sloth.plan_puzzle.domain.schedule.UserSchedule;
 import com.sloth.plan_puzzle.domain.schedule.UserScheduleState;

@@ -1,7 +1,7 @@
 package com.sloth.plan_puzzle.api.service.recruitment;
 
 
-import static com.sloth.plan_puzzle.common.TimeValidator.TimeFormatUnit;
+import static com.sloth.plan_puzzle.common.validator.TimeValidator.TimeFormatUnit;
 
 import com.sloth.plan_puzzle.api.service.channel.ChannelService;
 import com.sloth.plan_puzzle.api.service.participation.ParticipationService;

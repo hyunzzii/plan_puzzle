@@ -1,4 +1,4 @@
-package com.sloth.plan_puzzle.common;
+package com.sloth.plan_puzzle.common.validator;
 
 import static com.sloth.plan_puzzle.common.exception.CustomExceptionInfo.INVALID_TIME_FORMAT;
 

@@ -1,4 +1,4 @@
-package com.sloth.plan_puzzle.common;
+package com.sloth.plan_puzzle.common.validator;
 
 import com.sloth.plan_puzzle.common.exception.CustomException;
 import com.sloth.plan_puzzle.common.exception.CustomExceptionInfo;

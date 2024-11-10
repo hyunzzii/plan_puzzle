@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.sloth.plan_puzzle.common.exception.CustomException;
+import com.sloth.plan_puzzle.common.validator.UrlValidator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +16,7 @@ class UrlValidatorTest {
         //given
         String imgUrl = "https://planpuzzle-bucket.s3.us-west-1.amazonaws.com/sample-key";
         //when, then
-        assertThatNoException().isThrownBy(()->UrlValidator.isValidateUrl(imgUrl));
+        assertThatNoException().isThrownBy(()-> UrlValidator.isValidateUrl(imgUrl));
     }
 
     @DisplayName("채널의 img-url이 올바르지 않으면 예외가 발생합니다.")
