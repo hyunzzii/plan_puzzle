@@ -1,6 +1,6 @@
 package com.sloth.plan_puzzle.domain.channel;
 
-import com.sloth.plan_puzzle.common.UrlValidator;
+import com.sloth.plan_puzzle.common.validator.UrlValidator;
 import com.sloth.plan_puzzle.persistence.entity.channel.ChannelJpaEntity;
 import com.sloth.plan_puzzle.persistence.entity.user.UserJpaEntity;
 import lombok.Builder;

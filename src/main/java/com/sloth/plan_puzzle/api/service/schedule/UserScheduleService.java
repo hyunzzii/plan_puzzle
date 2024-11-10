@@ -1,6 +1,6 @@
 package com.sloth.plan_puzzle.api.service.schedule;
 
-import static com.sloth.plan_puzzle.common.TimeValidator.TimeFormatUnit;
+import static com.sloth.plan_puzzle.common.validator.TimeValidator.TimeFormatUnit;
 import static com.sloth.plan_puzzle.common.exception.CustomExceptionInfo.OVERLAPPING_SCHEDULE;
 import static com.sloth.plan_puzzle.domain.schedule.UserScheduleState.CANDIDATE;
 import static com.sloth.plan_puzzle.domain.schedule.UserScheduleState.CONFIRMED;
