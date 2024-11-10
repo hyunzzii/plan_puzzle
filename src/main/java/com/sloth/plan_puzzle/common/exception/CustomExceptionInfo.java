@@ -8,14 +8,14 @@ public enum CustomExceptionInfo {
     INVALID_SCHEDULE_TIME(400, "invalid schedule date time", 400001),
     INVALID_IMG_URL(400, "invalid img url", 4000002),
     INVALID_RECRUIT_CAPACITY(400, "participation should be bigger than current recruit count", 400003),
-    INVALID_TIME_FORMAT(400,"invalid time format",400004),
-    INVALID_TIMESLOT(400,"end time cannot be before the start time",400005),
-    INVALID_DURATION(400,"duration for generate is not valid",400006),
+    INVALID_TIME_FORMAT(400, "invalid time format", 400004),
+    INVALID_TIMESLOT(400, "end time cannot be before the start time", 400005),
+    INVALID_DURATION(400, "duration for generate is not valid", 400006),
     OVERLAPPING_SCHEDULE(400, "this is an overlapping schedule", 400007),
-    RECRUITMENT_CLOSED(400,"cannot participate because the recruitment is closed",400008),
-    INVALID_DEADLINE(400,"deadline should be later now",400009),
-    VOTE_ALREADY_EXISTS(400,"vote already exists, can not create vote",400010),
-    ALREADY_FILLED(400,"recruitment have been already filled",400008),
+    RECRUITMENT_CLOSED(400, "cannot participate because the recruitment is closed", 400008),
+    INVALID_DEADLINE(400, "deadline should be later now", 400009),
+    VOTE_ALREADY_EXISTS(400, "vote already exists, can not create vote", 400010),
+    ALREADY_FILLED(400, "recruitment have been already filled", 400008),
 
     //401
     //jwt
@@ -34,8 +34,8 @@ public enum CustomExceptionInfo {
     SUBSCRIPTION_NOT_EXIST(404, "subscription not exist", 404004),
     NOT_FOUND_RECRUITMENT(404, "recruitment not found", 404005),
     PARTICIPATION_NOT_EXIST(404, "participation not exist", 404006),
-    NOT_FOUND_VOTE(404,"vote not found",404007),
-    NOT_FOUND_TIMESLOT(404,"time-slot not found",404008),
+    NOT_FOUND_VOTE(404, "vote not found", 404007),
+    NOT_FOUND_TIMESLOT(404, "time-slot not found", 404008),
     SUBSCRIPTION_ALREADY_EXIST(404, "subscription already exist", 404009),
 
     //409

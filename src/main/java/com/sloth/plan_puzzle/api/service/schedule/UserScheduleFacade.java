@@ -6,7 +6,6 @@ import com.sloth.plan_puzzle.domain.vote.TimeSlot;
 import com.sloth.plan_puzzle.dto.schedule.CreateUserScheduleRequest;
 import com.sloth.plan_puzzle.dto.schedule.UpdateUserScheduleRequest;
 import com.sloth.plan_puzzle.persistence.entity.user.UserJpaEntity;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

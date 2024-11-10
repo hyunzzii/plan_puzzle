@@ -15,10 +15,11 @@ public record UserScheduleResponse(
         String content,
         UserScheduleState state
 ) {
-    public static List<UserScheduleResponse> fromDomainList(final List<UserSchedule> schedules){
+    public static List<UserScheduleResponse> fromDomainList(final List<UserSchedule> schedules) {
         return schedules.stream().map(UserScheduleResponse::fromDomain).toList();
     }
-    public static UserScheduleResponse fromDomain(final UserSchedule schedule){
+
+    public static UserScheduleResponse fromDomain(final UserSchedule schedule) {
         return UserScheduleResponse.builder()
                 .id(schedule.id())
                 .startDateTime(schedule.startDateTime())

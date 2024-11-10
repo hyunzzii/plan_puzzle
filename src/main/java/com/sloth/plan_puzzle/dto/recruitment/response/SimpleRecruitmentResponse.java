@@ -1,12 +1,12 @@
 package com.sloth.plan_puzzle.dto.recruitment.response;
 
 import com.sloth.plan_puzzle.domain.recruitment.RecruitState;
-import com.sloth.plan_puzzle.persistence.entity.recruitment.Region;
 import com.sloth.plan_puzzle.persistence.entity.recruitment.RecruitmentJpaEntity;
+import com.sloth.plan_puzzle.persistence.entity.recruitment.Region;
 import lombok.Builder;
 
 @Builder
-public record SimpleRecruitmentResponse (
+public record SimpleRecruitmentResponse(
         Long id,
         String title,
         String content,

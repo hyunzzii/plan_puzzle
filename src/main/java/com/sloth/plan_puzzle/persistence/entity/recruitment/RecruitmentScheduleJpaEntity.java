@@ -51,9 +51,10 @@ public class RecruitmentScheduleJpaEntity {
         this.recruitment = recruitmentEntity;
     }
 
-    public static RecruitmentScheduleJpaEntity create(final LocalDateTime startDateTime, final LocalDateTime endDateTime,
-                                               final String title, final String content,
-                                               final RecruitmentJpaEntity recruitmentEntity) {
+    public static RecruitmentScheduleJpaEntity create(final LocalDateTime startDateTime,
+                                                      final LocalDateTime endDateTime,
+                                                      final String title, final String content,
+                                                      final RecruitmentJpaEntity recruitmentEntity) {
         return RecruitmentScheduleJpaEntity.builder()
                 .startDateTime(startDateTime)
                 .endDateTime(endDateTime)

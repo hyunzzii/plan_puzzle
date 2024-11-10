@@ -20,11 +20,13 @@ public record RecruitmentSchedule(
         String title,
         String content
 ) {
-    public static List<RecruitmentSchedule> fromEntityList(final List<RecruitmentScheduleJpaEntity> scheduleEntityList){
+    public static List<RecruitmentSchedule> fromEntityList(
+            final List<RecruitmentScheduleJpaEntity> scheduleEntityList) {
         return scheduleEntityList.stream()
                 .map(RecruitmentSchedule::fromEntity)
                 .toList();
     }
+
     public static RecruitmentSchedule fromEntity(final RecruitmentScheduleJpaEntity scheduleEntity) {
         return RecruitmentSchedule.builder()
                 .id(scheduleEntity.getId())
@@ -40,7 +42,7 @@ public record RecruitmentSchedule(
                 startDateTime, endDateTime, title, content, recruitmentEntity);
     }
 
-    public UserSchedule toUserSchedule(){
+    public UserSchedule toUserSchedule() {
         return UserSchedule.builder()
                 .startDateTime(startDateTime)
                 .endDateTime(endDateTime)

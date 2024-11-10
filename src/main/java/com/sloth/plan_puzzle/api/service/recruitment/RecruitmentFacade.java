@@ -6,7 +6,6 @@ import static com.sloth.plan_puzzle.common.TimeValidator.TimeFormatUnit;
 import com.sloth.plan_puzzle.api.service.channel.ChannelService;
 import com.sloth.plan_puzzle.api.service.participation.ParticipationService;
 import com.sloth.plan_puzzle.api.service.schedule.UserScheduleService;
-import com.sloth.plan_puzzle.api.service.user.UserService;
 import com.sloth.plan_puzzle.domain.channel.Channel;
 import com.sloth.plan_puzzle.domain.recruitment.Recruitment;
 import com.sloth.plan_puzzle.domain.recruitment.RecruitmentSchedule;
@@ -17,8 +16,8 @@ import com.sloth.plan_puzzle.dto.recruitment.CreateRecruitmentScheduleRequest;
 import com.sloth.plan_puzzle.dto.recruitment.PatchRecruitmentStateRequest;
 import com.sloth.plan_puzzle.dto.recruitment.response.RecruitmentResponse;
 import com.sloth.plan_puzzle.dto.vote.CreateVoteRequest;
-import com.sloth.plan_puzzle.dto.vote.response.TimeSlotResponse;
 import com.sloth.plan_puzzle.dto.vote.VoteRequest;
+import com.sloth.plan_puzzle.dto.vote.response.TimeSlotResponse;
 import com.sloth.plan_puzzle.persistence.entity.channel.ChannelJpaEntity;
 import com.sloth.plan_puzzle.persistence.entity.recruitment.RecruitmentJpaEntity;
 import com.sloth.plan_puzzle.persistence.entity.user.UserJpaEntity;
@@ -81,11 +80,6 @@ public class RecruitmentFacade {
     public Page<RecruitmentResponse> getChannelRecruitments(final Long channelId, final Pageable pageable) {
         return recruitmentService.getChannelRecruitments(channelId, pageable);
     }
-
-//    @Transactional(readOnly = true)
-//    public Page<RecruitmentResponse> getRecruitmentList(final Pageable pageable) {
-//        return recruitmentService.getRecruitmentList(pageable);
-//    }
 
     @Transactional(readOnly = true)
     public Page<RecruitmentResponse> getRecruitmentListForSearch(final String keyword, final Pageable pageable) {
@@ -155,37 +149,6 @@ public class RecruitmentFacade {
         recruitmentVoteService.deleteVote(recruitmentId, voteId);
     }
 
-//    public List<TimeSlot> getAvailableTimesForVote(final Long channelId, final Long recruitmentId,
-//                                                   final Integer durationMinutes,
-//                                                   final LocalDate startDate, final LocalDate endDate,
-//                                                   final Long userId) {
-//        verifyAuthorByUser(recruitmentId, channelId, userId);
-//        final RecruitmentJpaEntity recruitmentEntity = recruitmentService.getEntity(recruitmentId);
-//        final List<Long> participationIds = recruitmentEntity.getParticipationList().stream()
-//                .map(participation -> participation.getChannel().getUser().getId())
-//                .toList();
-//        return filterUnavailableTimeSlots(startDate.atStartOfDay(), endDate.atStartOfDay(), durationMinutes,
-//                participationIds);
-//    }
-
-//    private List<TimeSlot> filterUnavailableTimeSlots(final LocalDateTime startDateTime,
-//                                                      final LocalDateTime endDateTime,
-//                                                      final Integer durationMinutes,
-//                                                      final List<Long> participationIds) {
-//        List<TimeSlot> timeSlots = new ArrayList<>();
-//        for (Long userId : participationIds) {
-//            LocalDateTime dateTime = startDateTime;
-//            List<UserSchedule> schedules = userScheduleService.getWithinPeriod(startDateTime, endDateTime, userId);
-//            if (schedules.isEmpty()) {
-//                timeSlots.add(TimeSlot.create(dateTime, dateTime.plusMinutes(durationMinutes)));
-//                dateTime = dateTime.plusMinutes(TimeFormatUnit);
-//                continue;
-//            }
-//            dateTime = schedules.get(schedules.size() - 1).endDateTime();
-//        }
-//        return timeSlots;
-//    }
-
     public List<TimeSlot> getAvailableTimesForVote(final Long channelId, final Long recruitmentId,
                                                    final LocalDate startDate, final LocalDate endDate,
                                                    final Integer duration, final Long userId) {
@@ -241,16 +204,6 @@ public class RecruitmentFacade {
         userSchedules.sort(Comparator.comparing(TimeSlot::startDateTime));
         return userSchedules;
     }
-
-//    private boolean isTimeSlotAvailableForAllParticipants(final TimeSlot timeSlot, final List<Long> participationIds) {
-//        for (Long participationId : participationIds) {
-//            if (userScheduleService.isUnAvailableTimeSlot(timeSlot.startDateTime(), timeSlot.endDateTime(),
-//                    participationId)) {
-//                return false;
-//            }
-//        }
-//        return true;
-//    }
 
     //recruitment-schedule ---------
     public boolean isAvailableSchedule(final Long scheduleId, final Long userId) {

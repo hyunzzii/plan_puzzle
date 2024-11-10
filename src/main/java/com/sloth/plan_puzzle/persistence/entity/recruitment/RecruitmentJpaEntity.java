@@ -1,7 +1,6 @@
 package com.sloth.plan_puzzle.persistence.entity.recruitment;
 
 import com.sloth.plan_puzzle.domain.recruitment.RecruitState;
-import com.sloth.plan_puzzle.domain.recruitment.Recruitment;
 import com.sloth.plan_puzzle.persistence.entity.BaseTimeEntity;
 import com.sloth.plan_puzzle.persistence.entity.channel.ChannelJpaEntity;
 import com.sloth.plan_puzzle.persistence.entity.participation.ParticipationJpaEntity;
@@ -51,10 +50,6 @@ public class RecruitmentJpaEntity extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private RecruitState recruitState;
 
-//    @Column(nullable = false)
-//    @Enumerated(EnumType.STRING)
-//    private TimeState timeState;
-
     @Column(nullable = false)
     private String imgUrl;
 
@@ -62,7 +57,7 @@ public class RecruitmentJpaEntity extends BaseTimeEntity {
     @Column(nullable = false)
     private Region region;
 
-    @OneToOne(fetch =  FetchType.LAZY,cascade = CascadeType.REMOVE)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "vote_id", nullable = true)
     private VoteJpaEntity vote;
 
@@ -78,7 +73,8 @@ public class RecruitmentJpaEntity extends BaseTimeEntity {
 
     @Builder
     private RecruitmentJpaEntity(final String title, final String content, final Integer recruitCapacity,
-                                 final RecruitState recruitState, final String imgUrl, final Region region, final ChannelJpaEntity author) {
+                                 final RecruitState recruitState, final String imgUrl, final Region region,
+                                 final ChannelJpaEntity author) {
         this.title = title;
         this.content = content;
         this.recruitCapacity = recruitCapacity;
@@ -89,7 +85,8 @@ public class RecruitmentJpaEntity extends BaseTimeEntity {
     }
 
     public static RecruitmentJpaEntity create(final String title, final String content, final Integer recruitCapacity,
-                                              final RecruitState recruitState, final String imgUrl, final Region region, final ChannelJpaEntity author) {
+                                              final RecruitState recruitState, final String imgUrl, final Region region,
+                                              final ChannelJpaEntity author) {
         return RecruitmentJpaEntity.builder()
                 .title(title)
                 .content(content)

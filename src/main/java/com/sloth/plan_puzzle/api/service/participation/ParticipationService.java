@@ -1,6 +1,6 @@
 package com.sloth.plan_puzzle.api.service.participation;
 
-import static com.sloth.plan_puzzle.common.exception.CustomExceptionInfo.*;
+import static com.sloth.plan_puzzle.common.exception.CustomExceptionInfo.ALREADY_FILLED;
 
 import com.sloth.plan_puzzle.common.exception.CustomException;
 import com.sloth.plan_puzzle.common.exception.CustomExceptionInfo;

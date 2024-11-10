@@ -4,10 +4,10 @@ import com.sloth.plan_puzzle.domain.recruitment.Recruitment;
 import lombok.Builder;
 
 @Builder
-public record RecruitmentIdResponse (
+public record RecruitmentIdResponse(
         Long recruitmentId
-){
-    public static RecruitmentIdResponse fromDomain(final Recruitment recruitment){
+) {
+    public static RecruitmentIdResponse fromDomain(final Recruitment recruitment) {
         return RecruitmentIdResponse.builder()
                 .recruitmentId(recruitment.id())
                 .build();
