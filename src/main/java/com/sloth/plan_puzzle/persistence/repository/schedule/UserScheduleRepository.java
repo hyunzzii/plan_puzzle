@@ -1,11 +1,11 @@
-package com.sloth.plan_puzzle.persistence.repository.schedule.user;
+package com.sloth.plan_puzzle.persistence.repository.schedule;
 
 import static com.sloth.plan_puzzle.common.exception.CustomExceptionInfo.NOT_FOUND_SCHEDULE;
 import static com.sloth.plan_puzzle.common.exception.CustomExceptionInfo.UNAUTHORIZED_ACCESS;
 
 import com.sloth.plan_puzzle.common.exception.CustomException;
-import com.sloth.plan_puzzle.domain.schedule.user.UserScheduleState;
-import com.sloth.plan_puzzle.persistence.entity.schedule.user.UserScheduleJpaEntity;
+import com.sloth.plan_puzzle.domain.schedule.UserScheduleState;
+import com.sloth.plan_puzzle.persistence.entity.schedule.UserScheduleJpaEntity;
 import io.lettuce.core.dynamic.annotation.Param;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,14 +22,27 @@ public interface UserScheduleRepository extends JpaRepository<UserScheduleJpaEnt
 
 
     @Query("SELECT s FROM UserScheduleJpaEntity s WHERE s.user.id = :userId AND "
-            + "(s.startDateTime >= :startDateTime AND s.startDateTime < :endDateTime)"
-            + "OR (s.endDateTime > :startDateTime AND s.endDateTime <= : endDateTime)"
-            + "AND s.state = :state")
+            + "((s.startDateTime >= :startDateTime AND s.startDateTime < :endDateTime) "
+            + "OR (s.endDateTime > :startDateTime AND s.endDateTime <= :endDateTime)) "
+            + "AND s.state = :state "
+            + "ORDER BY s.startDateTime ASC")
     List<UserScheduleJpaEntity> findByPeriodAndUserId(
             @Param("startDateTime") LocalDateTime startDateTime,
             @Param("endDateTime") LocalDateTime endDateTime,
             @Param("state") UserScheduleState state,
             @Param("userId") Long userId);
+
+
+    @Query("SELECT COUNT(s) > 0 FROM UserScheduleJpaEntity s WHERE s.user.id = :userId AND "
+            + "((s.startDateTime >= :startDateTime AND s.startDateTime < :endDateTime) "
+            + "OR (s.endDateTime > :startDateTime AND s.endDateTime <= :endDateTime)) "
+            + "AND s.state = :state ")
+    boolean existsByPeriodAndUserId(
+            @Param("startDateTime") LocalDateTime startDateTime,
+            @Param("endDateTime") LocalDateTime endDateTime,
+            @Param("state") UserScheduleState state,
+            @Param("userId") Long userId);
+
 
     @Query("SELECT s FROM UserScheduleJpaEntity s WHERE s.state = :state AND s.user.id = :userId")
     List<UserScheduleJpaEntity> findByStateAndUserId(UserScheduleState state, Long userId);
@@ -51,8 +64,8 @@ public interface UserScheduleRepository extends JpaRepository<UserScheduleJpaEnt
                 .orElseThrow(() -> new CustomException(UNAUTHORIZED_ACCESS));
     }
 
-    default void deleteScheduleById(final Long id, final Long userId) {
-        if (!existsScheduleByIdAndUserId(id, userId)) {
+    default void deleteScheduleByIdAndUserId(final Long id, Long userId) {
+        if (!existsScheduleByIdAndUserId(id,userId)) {
             throw new CustomException(UNAUTHORIZED_ACCESS);
         }
         deleteById(id);

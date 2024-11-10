@@ -69,19 +69,32 @@ public class ChannelJpaEntity extends BaseTimeEntity {
     private final List<NoticeJpaEntity> notices = new ArrayList<>();
 
     @Builder
-    public ChannelJpaEntity(final String nickname, final String introduction, final String backImgUrl,
-                            final String profileImgUrl, final UserJpaEntity user) {
+    private ChannelJpaEntity(final String nickname, final String introduction, final String backImgUrl,
+                            final String profileImgUrl, final UserJpaEntity userEntity) {
         this.nickname = nickname;
         this.introduction = introduction;
         this.backImgUrl = backImgUrl == null ? DEFAULT_BACK_IMG_URL : backImgUrl;
         this.profileImgUrl = profileImgUrl == null ? DEFAULT_PROFILE_IMG_URL : backImgUrl;
-        this.user = user;
+        this.user = userEntity;
     }
 
-    public void update(final Channel channel) {
+    public static ChannelJpaEntity create(final String nickname, final String introduction, final String backImgUrl,
+                                          final String profileImgUrl, final UserJpaEntity userEntity){
+        return ChannelJpaEntity.builder()
+                .nickname(nickname)
+                .introduction(introduction)
+                .backImgUrl(backImgUrl)
+                .profileImgUrl(profileImgUrl)
+                .userEntity(userEntity)
+                .build();
+    }
+
+
+    public ChannelJpaEntity update(final Channel channel) {
         nickname = channel.nickname();
         introduction = channel.introduction();
         backImgUrl = channel.backImgUrl();
         profileImgUrl = channel.profileImgUrl();
+        return this;
     }
 }

@@ -1,7 +1,6 @@
 package com.sloth.plan_puzzle.api.controller.channel;
 
-import com.sloth.plan_puzzle.api.service.channel.ChannelService;
-import com.sloth.plan_puzzle.api.service.channel.NoticeService;
+import com.sloth.plan_puzzle.api.service.channel.ChannelFacade;
 import com.sloth.plan_puzzle.common.security.jwt.CustomUserDetails;
 import com.sloth.plan_puzzle.dto.ListWrapperResponse;
 import com.sloth.plan_puzzle.dto.channel.ChannelRequest;
@@ -30,19 +29,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/channels")
 public class ChannelController {
-    private final ChannelService channelService;
-    private final NoticeService noticeService;
+    private static final int PAGE_SIZE = 20;
+    private final ChannelFacade channelFacade;
 
     @GetMapping("/validation/nickname")
     public void validateNickname(@RequestParam("nickname") String nickname) {
-        channelService.isDuplicateNickname(nickname);
+        channelFacade.isDuplicateNickname(nickname);
     }
 
     @PostMapping("/user")
     public void createChannel(@AuthenticationPrincipal CustomUserDetails userDetails,
                               @RequestBody @Valid ChannelRequest request) {
         final Long userId = userDetails.getUserId();
-        channelService.createChannel(request, userId);
+        channelFacade.createChannel(request, userId);
     }
 
     @GetMapping("/user")
@@ -50,58 +49,55 @@ public class ChannelController {
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         final Long userId = userDetails.getUserId();
         return ListWrapperResponse.of(
-                SimpleChannelResponse.fromDomainList(channelService.getUserChannels(userId)));
+                SimpleChannelResponse.fromDomainList(channelFacade.getChannelsByUserId(userId)));
     }
 
     @PutMapping("/user/{channelId}")
     public void modifyMyChannel(@AuthenticationPrincipal CustomUserDetails userDetails,
                                 @PathVariable Long channelId, @RequestBody @Valid ChannelRequest request) {
         final Long userId = userDetails.getUserId();
-        channelService.updateChannel(channelId, request, userId);
+        channelFacade.updateChannel(channelId, request, userId);
     }
 
     @DeleteMapping("/user/{channelId}")
     public void deleteMyChannel(@AuthenticationPrincipal CustomUserDetails userDetails,
                                 @PathVariable Long channelId) {
         final Long userId = userDetails.getUserId();
-        channelService.deleteChannel(channelId, userId);
+        channelFacade.deleteChannel(channelId, userId);
     }
 
     @GetMapping
     public Page<SimpleChannelResponse> getChannels(@RequestParam("page") Integer page) {
-        final int PAGE_SIZE = 20;
         final Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by("createdDate").descending());
-        return channelService.getChannelsByPaging(pageable)
+        return channelFacade.getChannelsByPaging(pageable)
                 .map(SimpleChannelResponse::fromDomain);
     }
 
     @GetMapping("/search")
     public Page<SimpleChannelResponse> getChannelsForSearch(@RequestParam("page") Integer page,
                                                             @RequestParam("keyword") String keyword) {
-        final int PAGE_SIZE = 20;
         final Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by("createdDate").descending());
-        return channelService.getChannelsByPagingForSearch(keyword, pageable)
+        return channelFacade.getChannelsByPagingForSearch(keyword, pageable)
                 .map(SimpleChannelResponse::fromDomain);
     }
 
     @GetMapping("/{channelId}")
     public ChannelResponse getChannel(@PathVariable Long channelId) {
-        return ChannelResponse.fromDomain(channelService.getChannel(channelId));
+        return ChannelResponse.fromDomain(channelFacade.getChannel(channelId));
     }
 
     @PostMapping("/{channelId}/notices")
     public void createNotice(@AuthenticationPrincipal CustomUserDetails userDetails,
                              @PathVariable Long channelId, @RequestBody @Valid NoticeRequest request) {
         final Long userId = userDetails.getUserId();
-        noticeService.createNotice(channelId, request, userId);
+        channelFacade.createNotice(channelId, request, userId);
     }
 
     @GetMapping("/{channelId}/notices")
     public Page<NoticeResponse> getNotices(@PathVariable Long channelId,
                                            @RequestParam Integer page) {
-        final int PAGE_SIZE = 5;
         final Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by("createdDate").descending());
-        return noticeService.getNoticesByPaging(channelId, pageable)
+        return channelFacade.getNoticesByPaging(channelId, pageable)
                 .map(NoticeResponse::fromEntity);
     }
 
@@ -110,6 +106,6 @@ public class ChannelController {
                              @PathVariable Long channelId,
                              @PathVariable Long noticeId) {
         final Long userId = userDetails.getUserId();
-        noticeService.deleteNotice(channelId, noticeId, userId);
+        channelFacade.deleteNotice(channelId, noticeId, userId);
     }
 }

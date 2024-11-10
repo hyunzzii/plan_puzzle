@@ -14,6 +14,9 @@ public interface SubscriptionRepository extends JpaRepository<SubscriptionJpaEnt
     @Query("SELECT s FROM SubscriptionJpaEntity s WHERE s.subscriber.id = :subscriberId AND s.subscribed.id = :subscribedId")
     Optional<SubscriptionJpaEntity> findBySubscriberIdAndSubscribedId(Long subscriberId, Long subscribedId);
 
+    @Query("SELECT COUNT(s)>0 FROM SubscriptionJpaEntity s WHERE s.subscriber.id = :subscriberId AND s.subscribed.id = :subscribedId")
+    boolean existsBySubscriberIdAndSubscribedId(Long subscriberId, Long subscribedId);
+
     @Query("SELECT s FROM SubscriptionJpaEntity s WHERE s.subscriber.id = :subscriberId")
     List<SubscriptionJpaEntity> findBySubscriberId(Long subscriberId);
 

@@ -1,22 +1,21 @@
-package com.sloth.plan_puzzle.persistence.repository.schedule.user;
+package com.sloth.plan_puzzle.persistence.repository.schedule;
 
 import static com.sloth.plan_puzzle.common.exception.CustomExceptionInfo.*;
-import static com.sloth.plan_puzzle.domain.schedule.user.UserScheduleState.CANDIDATE;
-import static com.sloth.plan_puzzle.domain.schedule.user.UserScheduleState.CONFIRMED;
+import static com.sloth.plan_puzzle.domain.schedule.UserScheduleState.CANDIDATE;
+import static com.sloth.plan_puzzle.domain.schedule.UserScheduleState.CONFIRMED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
 
 import com.sloth.plan_puzzle.common.exception.CustomException;
-import com.sloth.plan_puzzle.common.exception.CustomExceptionInfo;
-import com.sloth.plan_puzzle.domain.schedule.user.UserScheduleState;
+import com.sloth.plan_puzzle.domain.schedule.UserScheduleState;
 import com.sloth.plan_puzzle.domain.user.AgeGroup;
 import com.sloth.plan_puzzle.domain.user.Gender;
 import com.sloth.plan_puzzle.domain.user.UserRole;
-import com.sloth.plan_puzzle.persistence.entity.schedule.user.UserScheduleJpaEntity;
+import com.sloth.plan_puzzle.persistence.entity.schedule.UserScheduleJpaEntity;
 import com.sloth.plan_puzzle.persistence.entity.user.UserJpaEntity;
+import com.sloth.plan_puzzle.persistence.repository.schedule.UserScheduleRepository;
 import com.sloth.plan_puzzle.persistence.repository.user.UserRepository;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;

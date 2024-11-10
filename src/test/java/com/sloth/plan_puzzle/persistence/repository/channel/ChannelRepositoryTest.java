@@ -1,12 +1,12 @@
 package com.sloth.plan_puzzle.persistence.repository.channel;
 
-import static com.sloth.plan_puzzle.common.exception.CustomExceptionInfo.*;
+import static com.sloth.plan_puzzle.common.exception.CustomExceptionInfo.UNAUTHORIZED_ACCESS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
 
 import com.sloth.plan_puzzle.common.exception.CustomException;
-import com.sloth.plan_puzzle.common.exception.CustomExceptionInfo;
 import com.sloth.plan_puzzle.domain.user.AgeGroup;
 import com.sloth.plan_puzzle.domain.user.Gender;
 import com.sloth.plan_puzzle.domain.user.UserRole;
@@ -33,17 +33,17 @@ import org.springframework.transaction.annotation.Transactional;
 class ChannelRepositoryTest {
     @Autowired
     private ChannelRepository channelRepository;
-
     @Autowired
     private UserRepository userRepository;
 
     private UserJpaEntity userEntity;
+    private UserJpaEntity otherUserEntity;
 
     @BeforeEach
     void setUp() {
-        UserJpaEntity otherUserEntity = saveUserEntity("other");
-        saveChannelEntity("study", otherUserEntity, "케이크 먹고 싶다.");
         userEntity = saveUserEntity("loginId");
+        otherUserEntity = saveUserEntity("other");
+        saveChannelEntity("study", otherUserEntity, "케이크 먹고 싶다.");
     }
 
 
@@ -68,31 +68,9 @@ class ChannelRepositoryTest {
 
     }
 
-    @DisplayName("채널의 nickname과 intrdouction으로 검색할 수 있습니다.")
-    @Test
-    void channelSearchTest() {
-        //given
-        saveChannelEntity("타르트", userEntity, "카페 페라는 사랑!");
-        saveChannelEntity("딸기우유", userEntity, "딸기 치즈 타르트 최고");
-        saveChannelEntity("망고+코코넛", userEntity, "망고 코코넛 스무디 먹고싶다...");
-        //when
-        Pageable pageable = PageRequest.of(0, 10, Sort.by("createdDate").descending());
-        List<ChannelJpaEntity> foundChannelEntity = channelRepository.getChannelsForSearch("타르트",pageable)
-                        .stream().toList();
-        //then
-        assertThat(foundChannelEntity)
-                .hasSize(2)
-                .extracting("nickname", "user","introduction")
-                .containsExactly(
-                        tuple("딸기우유", userEntity,"딸기 치즈 타르트 최고"),
-                        tuple("타르트", userEntity,"카페 페라는 사랑!")
-                );
-
-    }
-
     @DisplayName("채널의 owner_id와 user의 id가 일치합니다.")
     @Test
-    void findByIdAndUserIdTest() {
+    void getChannelByIdAndUserIdTest() {
         //given
         ChannelJpaEntity channelEntity = saveChannelEntity("cake", userEntity, "케이크 먹고 싶다.");
         //when
@@ -104,7 +82,7 @@ class ChannelRepositoryTest {
 
     @DisplayName("채널의 owner_id와 user의 id가 일치하지 않으면 예외가 발생합니다.")
     @Test
-    void findByIdAndUserIdFailTest() {
+    void getChannelByIdAndUserIdFailTest() {
         //given
         ChannelJpaEntity channelEntity = saveChannelEntity("cake", userEntity, "케이크 먹고 싶다.");
         //when,then
@@ -115,24 +93,76 @@ class ChannelRepositoryTest {
 
     @DisplayName("채널의 owner_id와 유저 id가 일치하면 채널을 삭제할 수 있습니다.")
     @Test
-    void deleteByIdAndUserIdTest() {
+    void deleteChannelByIdTest() {
         //given
         ChannelJpaEntity channelEntity = saveChannelEntity("cake", userEntity, "케이크 먹고 싶다.");
         //when
-        channelRepository.deleteChannelById(channelEntity.getId(),userEntity.getId());
+        channelRepository.deleteChannelById(channelEntity.getId(), userEntity.getId());
         //then
-        assertThat(channelRepository.existsByIdAndUserId(channelEntity.getId(),userEntity.getId())).isFalse();
+        assertThat(channelRepository.existsByIdAndUserId(channelEntity.getId(), userEntity.getId())).isFalse();
     }
 
     @DisplayName("채널의 owner_id와 유저 id가 일치하지 않으면 채널을 삭제할 수 없습니다.")
     @Test
-    void deleteByIdAndUserIdFailTest() {
+    void deleteChannelByIdFailTest() {
         //given
         ChannelJpaEntity channelEntity = saveChannelEntity("cake", userEntity, "케이크 먹고 싶다.");
         //when,then
         assertThatThrownBy(() -> channelRepository.deleteChannelById(channelEntity.getId(), 24L))
                 .isInstanceOf(CustomException.class)
                 .hasMessage(UNAUTHORIZED_ACCESS.getMessage());
+    }
+
+    @DisplayName("채널의 owner_id와 유저 id가 일치하지 않으면 예외가 발생합니다.")
+    @Test
+    void existsChannelByIdAndUserIdFailTest() {
+        //given
+        ChannelJpaEntity channelEntity = saveChannelEntity("cake", userEntity, "케이크 먹고 싶다.");
+        //when,then
+        assertThatThrownBy(
+                () -> channelRepository.existsChannelByIdAndUserId(channelEntity.getId(), 24L))
+                .isInstanceOf(CustomException.class)
+                .hasMessage(UNAUTHORIZED_ACCESS.getMessage());
+    }
+
+    @DisplayName("채널의 owner_id와 유저 id가 일치하는지 확인할 수 있습니다.")
+    @Test
+    void existsChannelByIdAndUserIdTest() {
+        //given
+        ChannelJpaEntity channelEntity = saveChannelEntity("cake", userEntity, "케이크 먹고 싶다.");
+        //when,then
+        assertThatNoException().isThrownBy(
+                () -> channelRepository.existsChannelByIdAndUserId(channelEntity.getId(), userEntity.getId()));
+    }
+
+    @DisplayName("title과 introdcution을 통해 채널을 검색할 수 있다.")
+    @Test
+    void getChannelsForSearchTest() {
+        //given
+        saveChannelEntity("cake", userEntity, "cafe pera");
+        saveChannelEntity("cake", otherUserEntity, "cafe pera");
+        saveChannelEntity("신라면", userEntity, "라멘보다는 라면!");
+        saveChannelEntity("cake", userEntity, "cafe pera");
+        saveChannelEntity("cake", userEntity, "cafe pera");
+        saveChannelEntity("cake", userEntity, "cafe pera");
+        saveChannelEntity("라멘 먹고 싶어!", otherUserEntity, "도쿄 여행");
+        saveChannelEntity("이치란", userEntity, "이치란 라멘 왜 한국에 없어");
+        saveChannelEntity("후쿠오카", userEntity, "후쿠오카 라멘");
+
+        //when
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("createdDate").descending());
+
+        //then
+        assertThat(channelRepository.getChannelsForSearch("라멘", pageable))
+                .hasSize(4)
+                .extracting("nickname", "introduction")
+                .containsExactly(
+                        tuple("후쿠오카", "후쿠오카 라멘"),
+                        tuple("이치란", "이치란 라멘 왜 한국에 없어"),
+                        tuple("라멘 먹고 싶어!", "도쿄 여행"),
+                        tuple("신라면", "라멘보다는 라면!")
+                );
+
     }
 
 
@@ -142,7 +172,7 @@ class ChannelRepositoryTest {
                 .introduction(introduction)
                 .profileImgUrl("https://planpuzzle-bucket.s3.us-west-1.amazonaws.com/sample-key")
                 .backImgUrl("https://planpuzzle-bucket.s3.us-west-1.amazonaws.com/sample-key")
-                .user(userEntity)
+                .userEntity(userEntity)
                 .build());
     }
 

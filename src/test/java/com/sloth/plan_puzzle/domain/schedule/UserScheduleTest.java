@@ -1,11 +1,12 @@
-package com.sloth.plan_puzzle.domain.schedule.user;
+package com.sloth.plan_puzzle.domain.schedule;
 
 import static com.sloth.plan_puzzle.common.exception.CustomExceptionInfo.*;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.sloth.plan_puzzle.common.exception.CustomException;
-import com.sloth.plan_puzzle.common.exception.CustomExceptionInfo;
+import com.sloth.plan_puzzle.domain.schedule.UserSchedule;
+import com.sloth.plan_puzzle.domain.schedule.UserScheduleState;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
