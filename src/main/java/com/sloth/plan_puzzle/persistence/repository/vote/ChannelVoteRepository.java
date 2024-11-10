@@ -1,7 +1,6 @@
 package com.sloth.plan_puzzle.persistence.repository.vote;
 
 import com.sloth.plan_puzzle.persistence.entity.vote.ChannelVoteJpaEntity;
-import com.sloth.plan_puzzle.persistence.entity.vote.TimeSlotJpaEntity;
 import io.lettuce.core.dynamic.annotation.Param;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,7 +15,7 @@ public interface ChannelVoteRepository extends JpaRepository<ChannelVoteJpaEntit
     List<ChannelVoteJpaEntity> findListByVoteIdAndChannelId(@Param("voteId") Long voteId,
                                                             @Param("channelId") Long channelId);
 
-    default void deleteForVote(final Long voteId, final Long channelId){
+    default void deleteForVote(final Long voteId, final Long channelId) {
         this.deleteAll(findListByVoteIdAndChannelId(voteId, channelId));
     }
 }

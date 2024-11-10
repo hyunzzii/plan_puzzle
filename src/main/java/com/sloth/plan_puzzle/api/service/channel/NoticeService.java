@@ -1,10 +1,8 @@
 package com.sloth.plan_puzzle.api.service.channel;
 
 import com.sloth.plan_puzzle.domain.channel.Notice;
-import com.sloth.plan_puzzle.dto.channel.NoticeRequest;
 import com.sloth.plan_puzzle.persistence.entity.channel.ChannelJpaEntity;
 import com.sloth.plan_puzzle.persistence.entity.channel.NoticeJpaEntity;
-import com.sloth.plan_puzzle.persistence.repository.channel.ChannelRepository;
 import com.sloth.plan_puzzle.persistence.repository.channel.NoticeRepository;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class NoticeService {
     private final NoticeRepository noticeRepository;
 
-    public Notice create(final Notice notice,final ChannelJpaEntity channelEntity) {
+    public Notice create(final Notice notice, final ChannelJpaEntity channelEntity) {
         final NoticeJpaEntity noticeEntity = notice.toEntity(channelEntity);
         noticeRepository.save(noticeEntity);
         return Notice.fromEntity(noticeEntity);

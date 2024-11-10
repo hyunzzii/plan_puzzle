@@ -1,6 +1,6 @@
 package com.sloth.plan_puzzle.persistence.repository.vote;
 
-import static com.sloth.plan_puzzle.common.exception.CustomExceptionInfo.*;
+import static com.sloth.plan_puzzle.common.exception.CustomExceptionInfo.NOT_FOUND_VOTE;
 
 import com.sloth.plan_puzzle.common.exception.CustomException;
 import com.sloth.plan_puzzle.persistence.entity.vote.VoteJpaEntity;

@@ -5,7 +5,6 @@ import com.sloth.plan_puzzle.domain.recruitment.Recruitment;
 import com.sloth.plan_puzzle.dto.recruitment.response.RecruitmentResponse;
 import com.sloth.plan_puzzle.persistence.entity.channel.ChannelJpaEntity;
 import com.sloth.plan_puzzle.persistence.entity.recruitment.RecruitmentJpaEntity;
-import com.sloth.plan_puzzle.persistence.entity.user.UserJpaEntity;
 import com.sloth.plan_puzzle.persistence.repository.recruitment.RecruitmentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,7 +16,7 @@ import org.springframework.stereotype.Service;
 public class RecruitmentService {
     private final RecruitmentRepository recruitmentRepository;
 
-    public Recruitment create(final Recruitment recruitment, final ChannelJpaEntity channelEntity){
+    public Recruitment create(final Recruitment recruitment, final ChannelJpaEntity channelEntity) {
         final RecruitmentJpaEntity recruitmentEntity = recruitment.toEntity(channelEntity);
         recruitmentRepository.save(recruitmentEntity);
         return Recruitment.fromEntity(recruitmentEntity);
@@ -27,15 +26,15 @@ public class RecruitmentService {
         final RecruitmentJpaEntity recruitmentEntity = recruitmentRepository.getRecruitmentById(recruitmentId);
         final Integer participationSize = recruitmentEntity.getParticipationList().size();
         recruitment.validateRecruitCapacityForUpdate(participationSize);
-        recruitmentRepository.save(recruitmentEntity.update(recruitment.title(),recruitment.content(),
-                recruitment.recruitCapacity(),recruitment.imgUrl(),recruitment.region()));
+        recruitmentRepository.save(recruitmentEntity.update(recruitment.title(), recruitment.content(),
+                recruitment.recruitCapacity(), recruitment.imgUrl(), recruitment.region()));
     }
 
     public void deleteById(final Long recruitmentId) {
         recruitmentRepository.deleteById(recruitmentId);
     }
 
-    public void patchState(final Long recruitmentId,final RecruitState state) {
+    public void patchState(final Long recruitmentId, final RecruitState state) {
         final RecruitmentJpaEntity recruitmentEntity = recruitmentRepository.getRecruitmentById(recruitmentId);
         recruitmentRepository.save(recruitmentEntity.patchState(state));
     }
@@ -71,7 +70,7 @@ public class RecruitmentService {
         recruitmentRepository.getRecruitmentByIdAndAuthorId(recruitmentId, channelId);
     }
 
-    public RecruitmentJpaEntity getEntity(final Long id){
+    public RecruitmentJpaEntity getEntity(final Long id) {
         return recruitmentRepository.getRecruitmentById(id);
     }
 

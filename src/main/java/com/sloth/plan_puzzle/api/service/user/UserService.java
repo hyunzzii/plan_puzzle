@@ -31,7 +31,7 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public UserJpaEntity getEntity(final Long userId){
+    public UserJpaEntity getEntity(final Long userId) {
         return userRepository.getUserById(userId);
     }
 }

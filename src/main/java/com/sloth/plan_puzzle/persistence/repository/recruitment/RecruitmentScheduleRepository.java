@@ -2,7 +2,6 @@ package com.sloth.plan_puzzle.persistence.repository.recruitment;
 
 import com.sloth.plan_puzzle.common.exception.CustomException;
 import com.sloth.plan_puzzle.common.exception.CustomExceptionInfo;
-import com.sloth.plan_puzzle.persistence.entity.recruitment.RecruitmentJpaEntity;
 import com.sloth.plan_puzzle.persistence.entity.recruitment.RecruitmentScheduleJpaEntity;
 import io.lettuce.core.dynamic.annotation.Param;
 import java.util.List;

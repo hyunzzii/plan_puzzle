@@ -19,12 +19,12 @@ public record CreateRecruitmentScheduleRequest(
 
         String content
 ) {
-        public RecruitmentSchedule toDomain(){
-                return RecruitmentSchedule.builder()
-                        .startDateTime(startDateTime)
-                        .endDateTime(endDateTime)
-                        .title(title)
-                        .content(content)
-                        .build();
-        }
+    public RecruitmentSchedule toDomain() {
+        return RecruitmentSchedule.builder()
+                .startDateTime(startDateTime)
+                .endDateTime(endDateTime)
+                .title(title)
+                .content(content)
+                .build();
+    }
 }
