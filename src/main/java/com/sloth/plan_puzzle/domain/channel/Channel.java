@@ -25,13 +25,7 @@ public record Channel(
     }
 
     public ChannelJpaEntity toEntity(final UserJpaEntity userEntity) {
-        return ChannelJpaEntity.builder()
-                .user(userEntity)
-                .nickname(nickname)
-                .introduction(introduction)
-                .backImgUrl(backImgUrl)
-                .profileImgUrl(profileImgUrl)
-                .build();
+        return ChannelJpaEntity.create(nickname, introduction, backImgUrl, profileImgUrl, userEntity);
     }
 
     public Channel validateImgUrl() {

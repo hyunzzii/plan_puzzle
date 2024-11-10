@@ -32,33 +32,33 @@ import org.springframework.transaction.annotation.Transactional;
 class SubscriptionRepositoryTest {
 
     @Autowired
-    private NoticeRepository noticeRepository;
-    @Autowired
     private ChannelRepository channelRepository;
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private SubscriptionRepository subscriptionRepository;
 
-    private UserJpaEntity subscriberUser;
-    private UserJpaEntity subscribedUser;
-
     private ChannelJpaEntity subscriberChannel;
     private ChannelJpaEntity subscribedChannel;
 
     @BeforeEach
     void setUp() {
-        subscriberUser = saveUserEntity("subscriber_user");
-        subscribedUser = saveUserEntity("subscribed_user");
-
         subscriberChannel = saveChannelEntity(
-                "subscriber_channel", subscriberUser, "subscriber 입니다.");
+                "subscriber_channel", saveUserEntity("subscriber_user"), "subscriber 입니다.");
         subscribedChannel = saveChannelEntity(
-                "subscribed_channel", subscribedUser, "subscribed 입니다.");
-        SubscriptionJpaEntity subscriptionEntity = SubscriptionJpaEntity.create(
-                saveChannelEntity("other", subscriberUser, "기본데이터")
-                , subscribedChannel);
-        subscriptionRepository.save(subscriptionEntity);
+                "subscribed_channel", saveUserEntity("subscribed_user"), "subscribed 입니다.");
+    }
+
+    @DisplayName("해당하는 subscriber와 subscribed간의 구독을 취소할 수 있습니다.")
+    @Test
+    void subscribeWhenUserIsOwnerTest() {
+        //given
+        //when
+        saveSubscriptionEntity(subscriberChannel, subscribedChannel);
+        //then
+        assertThatNoException().isThrownBy(() -> subscriptionRepository.deleteSubscriptionBySubscribe(
+                subscriberChannel.getId(), subscribedChannel.getId()));
+
     }
 
     @DisplayName("해당하는 subscriber와 subscribed간의 관계가 없으면 구독을 취소할 수 없습니다.")
@@ -74,26 +74,44 @@ class SubscriptionRepositoryTest {
 
     }
 
+    @DisplayName("채널 id를 통해 구독중인 채널을 모두 불러옵니다.")
+    @Test
+    void findBySubscriberIdTest() {
+        //given
+        ChannelJpaEntity subscribedChannel2 = saveChannelEntity(
+                "subscribed_channel2", saveUserEntity("subscriber_user2"), "subscribed2 입니다.");
+
+        ChannelJpaEntity subscribedChannel3 = saveChannelEntity(
+                "subscribed_channel3", saveUserEntity("subscriber_user3"), "subscribed3 입니다.");
+        saveSubscriptionEntity(subscribedChannel2, subscribedChannel3);
+
+        //when
+        saveSubscriptionEntity(subscriberChannel, subscribedChannel);
+        saveSubscriptionEntity(subscriberChannel, subscribedChannel2);
+        saveSubscriptionEntity(subscriberChannel, subscribedChannel3);
+
+        //then
+        assertThat(subscriptionRepository.findBySubscriberId(subscriberChannel.getId()))
+                .hasSize(3)
+                .extracting("subscribed")
+                .containsExactlyInAnyOrder(subscribedChannel, subscribedChannel2, subscribedChannel3);
+
+    }
+
+    private SubscriptionJpaEntity saveSubscriptionEntity(ChannelJpaEntity subscriberChannel,
+                                                         ChannelJpaEntity subscribedChannel) {
+        return subscriptionRepository.save(SubscriptionJpaEntity.create(subscriberChannel, subscribedChannel));
+    }
+
     private ChannelJpaEntity saveChannelEntity(String nickname, UserJpaEntity userEntity, String introduction) {
-        return channelRepository.save(ChannelJpaEntity.builder()
-                .nickname(nickname)
-                .introduction(introduction)
-                .profileImgUrl("https://planpuzzle-bucket.s3.us-west-1.amazonaws.com/sample-key")
-                .backImgUrl("https://planpuzzle-bucket.s3.us-west-1.amazonaws.com/sample-key")
-                .user(userEntity)
-                .build());
+        return channelRepository.save(ChannelJpaEntity.create(nickname, introduction,
+                "https://planpuzzle-bucket.s3.us-west-1.amazonaws.com/sample-key",
+                "https://planpuzzle-bucket.s3.us-west-1.amazonaws.com/sample-key", userEntity));
     }
 
     private UserJpaEntity saveUserEntity(String loginId) {
         final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        return userRepository.save(UserJpaEntity.builder()
-                .loginId(loginId)
-                .loginPw(passwordEncoder.encode("password"))
-                .name("test")
-                .email("test@ajou.ac.kr")
-                .gender(Gender.FEMALE)
-                .ageGroup(AgeGroup.TWENTIES)
-                .role(UserRole.ROLE_USER)
-                .build());
+        return userRepository.save(UserJpaEntity.create(loginId, passwordEncoder.encode("password"),
+                "홍길동", "test@ajou.ac.kr", Gender.FEMALE, AgeGroup.TWENTIES, UserRole.ROLE_USER));
     }
 }

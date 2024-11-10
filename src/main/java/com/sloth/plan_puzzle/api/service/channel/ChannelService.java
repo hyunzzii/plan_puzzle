@@ -3,7 +3,6 @@ package com.sloth.plan_puzzle.api.service.channel;
 import static com.sloth.plan_puzzle.common.exception.CustomExceptionInfo.*;
 
 import com.sloth.plan_puzzle.common.exception.CustomException;
-import com.sloth.plan_puzzle.common.exception.CustomExceptionInfo;
 import com.sloth.plan_puzzle.domain.channel.Channel;
 import com.sloth.plan_puzzle.dto.channel.ChannelRequest;
 import com.sloth.plan_puzzle.persistence.entity.channel.ChannelJpaEntity;
@@ -18,60 +17,54 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class ChannelService {
     private final ChannelRepository channelRepository;
-    private final UserRepository userRepository;
 
-    public Channel createChannel(final ChannelRequest channelRequest, final Long userId) {
-        final UserJpaEntity userEntity = userRepository.getUserById(userId);
-        final Channel channel = channelRequest.toDomain().validateImgUrl();
-        final ChannelJpaEntity channelEntity = channel.toEntity(userEntity);
-//        userEntity.addChannel(channelEntity);
-        channelRepository.save(channelEntity);
-        return Channel.fromEntity(channelEntity);
+    public Channel create(final Channel channel, final UserJpaEntity userEntity) {
+        return Channel.fromEntity(channelRepository.save(channel.toEntity(userEntity)));
     }
 
-    public void deleteChannel(final Long channelId, final Long userId) {
+    public void delete(final Long channelId, final Long userId) {
         channelRepository.deleteChannelById(channelId, userId);
     }
 
-    public void updateChannel(final Long channelId, final ChannelRequest request, final Long userId) {
-        final Channel channel = request.toDomain().validateImgUrl();
+    public void update(final Long channelId, final Channel channel, final Long userId) {
         final ChannelJpaEntity channelEntity = channelRepository.getChannelByIdAndUserId(channelId, userId);
-        channelEntity.update(channel);
-        channelRepository.save(channelEntity);
+        channelRepository.save(channelEntity.update(channel));
     }
 
-    @Transactional(readOnly = true)
     public void isDuplicateNickname(final String nickname) {
         if (channelRepository.existsByNickname(nickname)) {
             throw new CustomException(DUPLICATE_NICKNAME);
         }
     }
 
-    @Transactional(readOnly = true)
     public Channel getChannel(final Long channelId) {
         return Channel.fromEntity(channelRepository.getChannelById(channelId));
     }
 
-    @Transactional(readOnly = true)
-    public List<Channel> getUserChannels(final Long userId) {
+    public List<Channel> getChannelsByUserId(final Long userId) {
         return channelRepository.findByUserId(userId).stream()
                 .map(Channel::fromEntity)
                 .toList();
     }
 
-    @Transactional(readOnly = true)
     public Page<Channel> getChannelsByPagingForSearch(final String keyword, final Pageable pageable) {
         return channelRepository.getChannelsForSearch(keyword, pageable)
                 .map(Channel::fromEntity);
     }
 
-    @Transactional(readOnly = true)
     public Page<Channel> getChannelsByPaging(final Pageable pageable) {
         return channelRepository.findAll(pageable)
                 .map(Channel::fromEntity);
+    }
+
+    public void verifyChannel(final Long channelId, final Long userId) {
+        channelRepository.existsChannelByIdAndUserId(channelId, userId);
+    }
+
+    public ChannelJpaEntity getEntity(final Long channelId) {
+        return channelRepository.getChannelById(channelId);
     }
 }

@@ -1,4 +1,4 @@
-package com.sloth.plan_puzzle.domain.schedule.user;
+package com.sloth.plan_puzzle.domain.schedule;
 
 public enum UserScheduleState {
     CANDIDATE,

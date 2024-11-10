@@ -1,10 +1,10 @@
-package com.sloth.plan_puzzle.domain.schedule.user;
+package com.sloth.plan_puzzle.domain.schedule;
 
 import static com.sloth.plan_puzzle.common.exception.CustomExceptionInfo.INVALID_SCHEDULE_TIME;
 
 import com.sloth.plan_puzzle.common.TimeValidator;
 import com.sloth.plan_puzzle.common.exception.CustomException;
-import com.sloth.plan_puzzle.persistence.entity.schedule.user.UserScheduleJpaEntity;
+import com.sloth.plan_puzzle.persistence.entity.schedule.UserScheduleJpaEntity;
 import com.sloth.plan_puzzle.persistence.entity.user.UserJpaEntity;
 import java.time.LocalDateTime;
 import lombok.Builder;

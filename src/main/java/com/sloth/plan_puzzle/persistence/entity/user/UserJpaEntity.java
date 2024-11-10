@@ -5,7 +5,7 @@ import com.sloth.plan_puzzle.domain.user.Gender;
 import com.sloth.plan_puzzle.domain.user.UserRole;
 import com.sloth.plan_puzzle.persistence.entity.BaseTimeEntity;
 import com.sloth.plan_puzzle.persistence.entity.channel.ChannelJpaEntity;
-import com.sloth.plan_puzzle.persistence.entity.schedule.user.UserScheduleJpaEntity;
+import com.sloth.plan_puzzle.persistence.entity.schedule.UserScheduleJpaEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
