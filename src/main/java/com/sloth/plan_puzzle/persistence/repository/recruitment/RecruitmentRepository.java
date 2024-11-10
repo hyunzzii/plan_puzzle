@@ -6,7 +6,6 @@ import static com.sloth.plan_puzzle.common.exception.CustomExceptionInfo.UNAUTHO
 import com.sloth.plan_puzzle.common.exception.CustomException;
 import com.sloth.plan_puzzle.persistence.entity.recruitment.RecruitmentJpaEntity;
 import io.lettuce.core.dynamic.annotation.Param;
-import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

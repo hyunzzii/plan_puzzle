@@ -43,11 +43,10 @@ public class SecurityConfig {
 
         http.exceptionHandling((exceptionHandling) -> exceptionHandling
                         .authenticationEntryPoint(authenticationEntryPoint)
-//                .accessDeniedHandler(accessDeniedHandler)
         );
         http.authorizeHttpRequests(authMangerRequestMatcher -> authMangerRequestMatcher
                 .requestMatchers("/users/**").permitAll()
-                .requestMatchers("/auth/login","/auth/reissue").permitAll()
+                .requestMatchers("/auth/login", "/auth/reissue").permitAll()
                 .requestMatchers(getSwaggerUIPath()).permitAll()
                 .anyRequest().authenticated());
 

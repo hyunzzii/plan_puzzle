@@ -1,9 +1,8 @@
 package com.sloth.plan_puzzle.persistence.entity.vote;
 
-import static com.sloth.plan_puzzle.common.exception.CustomExceptionInfo.*;
+import static com.sloth.plan_puzzle.common.exception.CustomExceptionInfo.VOTE_ALREADY_EXISTS;
 
 import com.sloth.plan_puzzle.common.exception.CustomException;
-import com.sloth.plan_puzzle.common.exception.CustomExceptionInfo;
 import com.sloth.plan_puzzle.persistence.entity.recruitment.RecruitmentJpaEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -13,7 +12,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -51,7 +49,7 @@ public class VoteJpaEntity {
     }
 
     public static VoteJpaEntity create(final LocalDateTime deadline, final RecruitmentJpaEntity recruitmentEntity) {
-        if(recruitmentEntity.getVote()!=null){
+        if (recruitmentEntity.getVote() != null) {
             throw new CustomException(VOTE_ALREADY_EXISTS);
         }
         return VoteJpaEntity.builder()

@@ -14,7 +14,7 @@ public record TimeSlotResponse(
         LocalDateTime endDateTime,
         List<SimpleChannelResponse> voters
 ) {
-    public static TimeSlotResponse fromDomain(final TimeSlot timeSlot, final List<Channel> voters){
+    public static TimeSlotResponse fromDomain(final TimeSlot timeSlot, final List<Channel> voters) {
         return TimeSlotResponse.builder()
                 .id(timeSlot.id())
                 .startDateTime(timeSlot.startDateTime())

@@ -34,12 +34,6 @@ public class RecruitmentController {
         return recruitmentFacade.getChannelRecruitments(channelId, pageable);
     }
 
-//    @GetMapping
-//    public Page<RecruitmentResponse> getRecruitments(@RequestParam("page") Integer page) {
-//        final Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by("createdDate").descending());
-//        return recruitmentFacade.getRecruitmentList(pageable);
-//    }
-
     @GetMapping("/{recruitId}")
     public RecruitmentResponse getRecruitment(@PathVariable Long recruitId) {
         return recruitmentFacade.getRecruitment(recruitId);

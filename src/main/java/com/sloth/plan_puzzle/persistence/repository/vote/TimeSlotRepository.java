@@ -1,9 +1,8 @@
 package com.sloth.plan_puzzle.persistence.repository.vote;
 
-import static com.sloth.plan_puzzle.common.exception.CustomExceptionInfo.*;
+import static com.sloth.plan_puzzle.common.exception.CustomExceptionInfo.NOT_FOUND_TIMESLOT;
 
 import com.sloth.plan_puzzle.common.exception.CustomException;
-import com.sloth.plan_puzzle.common.exception.CustomExceptionInfo;
 import com.sloth.plan_puzzle.persistence.entity.vote.TimeSlotJpaEntity;
 import io.lettuce.core.dynamic.annotation.Param;
 import java.util.List;
@@ -15,8 +14,8 @@ public interface TimeSlotRepository extends JpaRepository<TimeSlotJpaEntity, Lon
             + "ORDER BY t.startDateTime")
     List<TimeSlotJpaEntity> findListByVoteId(@Param("voteId") Long voteId);
 
-    default TimeSlotJpaEntity getTimeSlotById(final Long id){
+    default TimeSlotJpaEntity getTimeSlotById(final Long id) {
         return findById(id)
-                .orElseThrow(()->new CustomException(NOT_FOUND_TIMESLOT));
+                .orElseThrow(() -> new CustomException(NOT_FOUND_TIMESLOT));
     }
 }

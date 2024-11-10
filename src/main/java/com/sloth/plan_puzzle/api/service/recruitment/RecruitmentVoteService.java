@@ -27,7 +27,7 @@ public class RecruitmentVoteService {
     private final VoteRepository voteRepository;
     private final TimeSlotRepository timeSlotRepository;
 
-    public Vote createVote(final Long recruitmentId,final Vote vote, final List<TimeSlot> timeSlots,
+    public Vote createVote(final Long recruitmentId, final Vote vote, final List<TimeSlot> timeSlots,
                            final RecruitmentJpaEntity recruitmentEntity) {
         if (voteRepository.existsVoteByRecruitment(recruitmentId)) {
             throw new CustomException(VOTE_ALREADY_EXISTS);

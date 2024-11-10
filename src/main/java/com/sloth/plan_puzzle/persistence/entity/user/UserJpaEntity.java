@@ -46,9 +46,6 @@ public class UserJpaEntity extends BaseTimeEntity {
     @Column(nullable = false)
     private String email;
 
-//    @Column(nullable = false)
-//    private String nickname;
-
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Gender gender;

@@ -29,7 +29,7 @@ public interface ChannelRepository extends JpaRepository<ChannelJpaEntity, Long>
     boolean existsByIdAndUserId(@Param("id") Long id, @Param("userId") Long userId);
 
     default void existsChannelByIdAndUserId(final Long id, final Long userId) {
-        if(!existsByIdAndUserId(id, userId)){
+        if (!existsByIdAndUserId(id, userId)) {
             throw new CustomException(UNAUTHORIZED_ACCESS);
         }
     }

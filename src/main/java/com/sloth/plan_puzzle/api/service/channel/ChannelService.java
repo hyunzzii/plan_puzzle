@@ -1,20 +1,17 @@
 package com.sloth.plan_puzzle.api.service.channel;
 
-import static com.sloth.plan_puzzle.common.exception.CustomExceptionInfo.*;
+import static com.sloth.plan_puzzle.common.exception.CustomExceptionInfo.DUPLICATE_NICKNAME;
 
 import com.sloth.plan_puzzle.common.exception.CustomException;
 import com.sloth.plan_puzzle.domain.channel.Channel;
-import com.sloth.plan_puzzle.dto.channel.ChannelRequest;
 import com.sloth.plan_puzzle.persistence.entity.channel.ChannelJpaEntity;
 import com.sloth.plan_puzzle.persistence.entity.user.UserJpaEntity;
 import com.sloth.plan_puzzle.persistence.repository.channel.ChannelRepository;
-import com.sloth.plan_puzzle.persistence.repository.user.UserRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor

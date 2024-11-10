@@ -65,7 +65,7 @@ public interface UserScheduleRepository extends JpaRepository<UserScheduleJpaEnt
     }
 
     default void deleteScheduleByIdAndUserId(final Long id, Long userId) {
-        if (!existsScheduleByIdAndUserId(id,userId)) {
+        if (!existsScheduleByIdAndUserId(id, userId)) {
             throw new CustomException(UNAUTHORIZED_ACCESS);
         }
         deleteById(id);
