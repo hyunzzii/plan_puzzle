@@ -15,7 +15,7 @@ class TimeValidatorTest {
     @Test
     void ValidateTimeFormatTest() {
         //given
-        LocalDateTime time = LocalDateTime.parse("2024-11-11T11:10");
+        LocalDateTime time = LocalDateTime.parse("2024-11-11T11:15");
 
         //when, then
         assertThatNoException().isThrownBy(
@@ -24,7 +24,7 @@ class TimeValidatorTest {
 
     }
 
-    @DisplayName("시간이 5분 단위가 아니면 예외가 발생합니다.")
+    @DisplayName("시간이 15분 단위가 아니면 예외가 발생합니다.")
     @Test
     void ValidateTimeFormatFailTest() {
         //given

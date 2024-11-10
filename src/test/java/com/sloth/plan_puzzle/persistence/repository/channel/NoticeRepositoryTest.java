@@ -51,9 +51,9 @@ class NoticeRepositoryTest {
         setCreatedDate(saveNoticeEntity("11월 행사 취소", "11월의 행사가 취소되었습니다.", channelEntity),
                 LocalDateTime.parse("2024-10-28T00:00"));
         setCreatedDate(saveNoticeEntity("홍대 방탈출 행사 공지합니다.", "일정에 참고해주세요.", channelEntity),
-                LocalDateTime.parse("2024-11-03T00:00"));
+                LocalDate.now().minusDays(5).atStartOfDay());
         setCreatedDate(saveNoticeEntity("클라이밍 규칙", "규칙 말해요.", channelEntity),
-                LocalDateTime.parse("2024-11-05T00:00"));
+                LocalDate.now().minusDays(3).atStartOfDay());
         setCreatedDate(saveNoticeEntity("구독하지 마세요.", "규칙 말해요.", otherChannelEntity),
                 LocalDateTime.parse("2024-11-05T00:00"));
     }
@@ -94,8 +94,8 @@ class NoticeRepositoryTest {
         assertThat(foundNotices).hasSize(2)
                 .extracting("title", "createdDate", "channel")
                 .containsExactly(
-                        tuple("클라이밍 규칙", LocalDateTime.parse("2024-11-05T00:00"), channelEntity),
-                        tuple("홍대 방탈출 행사 공지합니다.", LocalDateTime.parse("2024-11-03T00:00"), channelEntity)
+                        tuple("클라이밍 규칙", LocalDate.now().minusDays(3).atStartOfDay(), channelEntity),
+                        tuple("홍대 방탈출 행사 공지합니다.", LocalDate.now().minusDays(5).atStartOfDay(), channelEntity)
                 );
     }
 
