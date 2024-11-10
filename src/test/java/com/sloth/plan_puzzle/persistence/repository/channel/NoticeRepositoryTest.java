@@ -38,22 +38,23 @@ class NoticeRepositoryTest {
     @Autowired
     private ChannelRepository channelRepository;
     @Autowired
-    private UserRepository userRepository;
-    @Autowired
     private SubscriptionRepository subscriptionRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     private ChannelJpaEntity channelEntity;
 
     @BeforeEach
     void setUp() throws Exception {
         channelEntity = saveChannelEntity("딸기타르트");
+        ChannelJpaEntity otherChannelEntity = saveChannelEntity("배고파");
         setCreatedDate(saveNoticeEntity("11월 행사 취소", "11월의 행사가 취소되었습니다.", channelEntity),
                 LocalDateTime.parse("2024-10-28T00:00"));
         setCreatedDate(saveNoticeEntity("홍대 방탈출 행사 공지합니다.", "일정에 참고해주세요.", channelEntity),
                 LocalDateTime.parse("2024-11-03T00:00"));
         setCreatedDate(saveNoticeEntity("클라이밍 규칙", "규칙 말해요.", channelEntity),
                 LocalDateTime.parse("2024-11-05T00:00"));
-        setCreatedDate(saveNoticeEntity("구독하지 마세요.", "규칙 말해요.", saveChannelEntity("noHungry")),
+        setCreatedDate(saveNoticeEntity("구독하지 마세요.", "규칙 말해요.", otherChannelEntity),
                 LocalDateTime.parse("2024-11-05T00:00"));
     }
 
@@ -115,7 +116,7 @@ class NoticeRepositoryTest {
                 .introduction("배고파요")
                 .profileImgUrl("https://planpuzzle-bucket.s3.us-west-1.amazonaws.com/sample-key")
                 .backImgUrl("https://planpuzzle-bucket.s3.us-west-1.amazonaws.com/sample-key")
-                .user(saveUserEntity())
+                .userEntity(saveUserEntity())
                 .build());
     }
 

@@ -35,10 +35,6 @@ class UserRepositoryTest {
         userRepository.save(userEntity);
         //then
         assertThat(userRepository.getUserByLoginId("loginId")).isEqualTo(userEntity);
-
-//        assertThat(userRepository.getUserByLoginId("loginId"))
-//                .extracting("name",  "loginId")
-//                .containsExactly("test", "loginId");
     }
 
     @Test

@@ -25,12 +25,7 @@ public record Notice(
     }
 
     public NoticeJpaEntity toEntity(final ChannelJpaEntity channelEntity) {
-        return NoticeJpaEntity.builder()
-                .title(title)
-                .content(content)
-                .imgUrl(imgUrl)
-                .channelEntity(channelEntity)
-                .build();
+        return NoticeJpaEntity.create(title, content, imgUrl, channelEntity);
     }
 
     public Notice validateImgUrl() {

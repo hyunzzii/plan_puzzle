@@ -1,7 +1,7 @@
-package com.sloth.plan_puzzle.dto.schedule.user;
+package com.sloth.plan_puzzle.dto.schedule;
 
-import com.sloth.plan_puzzle.domain.schedule.user.UserSchedule;
-import com.sloth.plan_puzzle.domain.schedule.user.UserScheduleState;
+import com.sloth.plan_puzzle.domain.schedule.UserSchedule;
+import com.sloth.plan_puzzle.domain.schedule.UserScheduleState;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Builder;

@@ -1,5 +1,8 @@
 package com.sloth.plan_puzzle.api.service.subscription;
 
+import static com.sloth.plan_puzzle.common.exception.CustomExceptionInfo.SUBSCRIPTION_NOT_EXIST;
+
+import com.sloth.plan_puzzle.common.exception.CustomException;
 import com.sloth.plan_puzzle.domain.channel.Channel;
 import com.sloth.plan_puzzle.persistence.entity.channel.ChannelJpaEntity;
 import com.sloth.plan_puzzle.persistence.entity.subscription.SubscriptionJpaEntity;
@@ -11,26 +14,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class SubscriptionService {
     private final SubscriptionRepository subscriptionRepository;
-    private final ChannelRepository channelRepository;
 
-    public void subscribe(final Long subscriberId, final Long subscribedId, final Long userId) {
-        final ChannelJpaEntity subscriber = channelRepository.getChannelByIdAndUserId(subscriberId, userId);
-        final ChannelJpaEntity subscribed = channelRepository.getChannelById(subscribedId);
+    public void subscribe(final ChannelJpaEntity subscriber, final ChannelJpaEntity subscribed) {
+        if(subscriptionRepository.existsBySubscriberIdAndSubscribedId(subscriber.getId(),subscribed.getId())){
+            throw new CustomException(SUBSCRIPTION_NOT_EXIST);
+        }
         subscriptionRepository.save(SubscriptionJpaEntity.create(subscriber, subscribed));
     }
 
-    public void unSubscribe(final Long subscriberId, final Long subscribedId, final Long userId) {
-        channelRepository.existsChannelByIdAndUserId(subscriberId, userId);
+    public void unSubscribe(final Long subscriberId, final Long subscribedId) {
         subscriptionRepository.deleteSubscriptionBySubscribe(subscriberId, subscribedId);
     }
 
-    @Transactional(readOnly = true)
-    public List<Channel> getSubscribedChannels(final Long channelId, final Long userId) {
-        channelRepository.existsChannelByIdAndUserId(channelId, userId);
+    public List<Channel> getSubscribedChannels(final Long channelId) {
         List<SubscriptionJpaEntity> subscriptionEntityList = subscriptionRepository.findBySubscriberId(channelId);
         return subscriptionEntityList.stream()
                 .map(subscription -> Channel.fromEntity(subscription.getSubscribed()))

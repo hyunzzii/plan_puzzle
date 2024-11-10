@@ -1,10 +1,10 @@
-package com.sloth.plan_puzzle.persistence.entity.schedule.user;
+package com.sloth.plan_puzzle.persistence.entity.schedule;
 
-import static com.sloth.plan_puzzle.domain.schedule.user.UserScheduleState.CANDIDATE;
-import static com.sloth.plan_puzzle.domain.schedule.user.UserScheduleState.CONFIRMED;
+import static com.sloth.plan_puzzle.domain.schedule.UserScheduleState.CANDIDATE;
+import static com.sloth.plan_puzzle.domain.schedule.UserScheduleState.CONFIRMED;
 
-import com.sloth.plan_puzzle.domain.schedule.user.UserSchedule;
-import com.sloth.plan_puzzle.domain.schedule.user.UserScheduleState;
+import com.sloth.plan_puzzle.domain.schedule.UserSchedule;
+import com.sloth.plan_puzzle.domain.schedule.UserScheduleState;
 import com.sloth.plan_puzzle.persistence.entity.user.UserJpaEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

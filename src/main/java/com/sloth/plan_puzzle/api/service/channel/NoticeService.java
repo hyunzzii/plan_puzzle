@@ -15,35 +15,27 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class NoticeService {
     private final NoticeRepository noticeRepository;
-    private final ChannelRepository channelRepository;
 
-    public Notice createNotice(final Long channelId, final NoticeRequest request, final Long userId) {
-        final ChannelJpaEntity channelEntity = channelRepository.getChannelByIdAndUserId(channelId, userId);
-        final Notice notice = request.toDomain().validateImgUrl();
+    public Notice create(final Notice notice,final ChannelJpaEntity channelEntity) {
         final NoticeJpaEntity noticeEntity = notice.toEntity(channelEntity);
         noticeRepository.save(noticeEntity);
         return Notice.fromEntity(noticeEntity);
     }
 
-    public void deleteNotice(final Long channelId, final Long noticeId, final Long userId) {
-        channelRepository.existsByIdAndUserId(channelId, userId);
+    public void delete(final Long noticeId) {
         noticeRepository.deleteById(noticeId);
     }
 
-    @Transactional(readOnly = true)
     public Page<Notice> getNoticesByPaging(final Long channelId, final Pageable pageable) {
         return noticeRepository.findByChannelId(channelId, pageable)
                 .map(Notice::fromEntity);
     }
 
     @Transactional(readOnly = true)
-    public List<Notice> getRecentNoticesForSubscription(final Long channelId, final Long userId,
-                                                        final LocalDateTime recent) {
-        channelRepository.existsByIdAndUserId(channelId, userId);
+    public List<Notice> getRecentNoticesForSubscription(final Long channelId, final LocalDateTime recent) {
         return noticeRepository.findRecentNoticesBySubscriberId(channelId, recent).stream()
                 .map(Notice::fromEntity)
                 .toList();

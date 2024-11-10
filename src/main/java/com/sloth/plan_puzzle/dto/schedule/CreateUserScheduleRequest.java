@@ -1,7 +1,7 @@
-package com.sloth.plan_puzzle.dto.schedule.user;
+package com.sloth.plan_puzzle.dto.schedule;
 
-import com.sloth.plan_puzzle.domain.schedule.user.UserSchedule;
-import com.sloth.plan_puzzle.domain.schedule.user.UserScheduleState;
+import com.sloth.plan_puzzle.domain.schedule.UserSchedule;
+import com.sloth.plan_puzzle.domain.schedule.UserScheduleState;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
