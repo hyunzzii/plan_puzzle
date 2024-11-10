@@ -2,7 +2,7 @@ package com.sloth.plan_puzzle.domain.recruitment;
 
 import static com.sloth.plan_puzzle.common.exception.CustomExceptionInfo.INVALID_RECRUIT_CAPACITY;
 
-import com.sloth.plan_puzzle.common.UrlValidator;
+import com.sloth.plan_puzzle.common.validator.UrlValidator;
 import com.sloth.plan_puzzle.common.exception.CustomException;
 import com.sloth.plan_puzzle.persistence.entity.channel.ChannelJpaEntity;
 import com.sloth.plan_puzzle.persistence.entity.recruitment.RecruitmentJpaEntity;
