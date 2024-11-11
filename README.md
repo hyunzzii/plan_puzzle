@@ -15,3 +15,24 @@
 - `Design` : 디자인 관련 코드 추가 및 수정
 - `Refactor` : 코드 리팩토링
 - `CI/CD` : 배포 관련 설정 추가 및 수정
+
+<br>  
+<br>  
+
+## 사용 기술 🧐
+- Spring Boot version 3.3.4
+- Spring Data JPA
+- Springdoc OpenAPI 2.2.6
+- Spring Data Redis
+- mockito
+- AWS S3
+- MySQL
+- Docker
+- Github Action
+
+<br>  
+<br>  
+
+## Structure 🚜
+
+  <img width="595" alt="image" src="https://github.com/user-attachments/assets/786f211d-d253-44c3-a4d0-a71cdadba133">
